@@ -19,7 +19,7 @@ func main() {
 	firstSample := colorHelper.MakeColorFromInput(255, 255, 255)
 
 	// try to update the color and see the effect
-	err, c := firstSample.UpdateCurrentColor(100, 255, 100)
+	err, c := firstSample.UpdateCurrentColor(24, 98, 118)
 
 	if err != nil {
 		fmt.Println("an error happened while converting the color")
@@ -33,8 +33,9 @@ func main() {
 	fmt.Println(hexa)
 
 	// save a color in the store
-	e := c.SaveColor()
+	c.SaveColor()
 	firstSample.SaveColor()
 
-	fmt.Println(e)
+	c.GenerateOtherFormat("hue")
+	fmt.Println("daa")
 }

@@ -3,6 +3,7 @@ package colorHelper
 import (
 	"errors"
 	"fmt"
+	"math"
 	"reflect"
 	"strconv"
 )
@@ -11,7 +12,7 @@ import (
 // We don't use the pointer as we does not play with the type for the moment...
 // Also we can directly let our struct access from the main file...
 // (!) Should I ?
-type hue struct {
+type rgbColor struct {
 	red   uint8
 	green uint8
 	blue  uint8
@@ -19,11 +20,16 @@ type hue struct {
 
 // Create a nil hue store, if the user does not it, it's still nil and not allocated in the memory
 // If we use make then it will have a place in hte memory
-var store []hue
+var (
+	store   []rgbColor
+	hueSqrt = math.Sqrt(3)
+)
+
+// define the constant that we need threw the package
 
 // MakeColorFromInput ...
-func MakeColorFromInput(r uint8, g uint8, b uint8) hue {
-	sample := hue{
+func MakeColorFromInput(r uint8, g uint8, b uint8) rgbColor {
+	sample := rgbColor{
 		red:   r,
 		green: g,
 		blue:  b,
@@ -38,11 +44,11 @@ func MakeColorFromInput(r uint8, g uint8, b uint8) hue {
 // --> nr Uint8
 // --> ng Uint8
 // --> nb Uint8
-// @ Error & hue
-func (c hue) UpdateCurrentColor(nr uint8, ng uint8, nb uint8) (error, hue) {
+// @ Error & rgbColor
+func (c rgbColor) UpdateCurrentColor(nr uint8, ng uint8, nb uint8) (error, rgbColor) {
 
 	if reflect.TypeOf(nr).String() != "uint8" {
-		return errors.New("red value is not in the valid format between 0 - 255"), hue{}
+		return errors.New("red value is not in the valid format between 0 - 255"), rgbColor{}
 	}
 
 	c.red = nr
@@ -54,9 +60,9 @@ func (c hue) UpdateCurrentColor(nr uint8, ng uint8, nb uint8) (error, hue) {
 
 // ConvertRGBtoHexa
 //		* Convert an RGB Color into HEXA
-// --> (c Hue)
+// --> (c rgbColor)
 // @ String
-func (c hue) ConvertRGBtoHexa() string {
+func (c rgbColor) ConvertRGBtoHexa() string {
 	var hexValue string
 	// Before converting our value to String
 	// We need to cast our Uint8 -> Int64
@@ -76,15 +82,30 @@ func (c hue) ConvertRGBtoHexa() string {
 	return hexValue
 }
 
-func (c hue) SaveColor() error {
+// SaveColor
+//		* Save the color into an array of store color
+// --> (c rgbColor)
+func (c rgbColor) SaveColor() error {
 	// populate the slice
 	// we allow the user to create a panel of color ranging from 0 color to 6
 	if len(store) < 6 {
 		store = append(store, c)
 
-		fmt.Println(store)
 		return nil
 	}
 
 	return errors.New("the store is already full")
 }
+
+// GenerateOtherFormat
+//		* Save the color into an other format
+func (c rgbColor) GenerateOtherFormat(formatName string) {
+	switch formatName {
+	case "hue":
+		c.rgbToHue()
+	default:
+		fmt.Println("the format is incorrect")
+	}
+}
+
+
