@@ -99,13 +99,12 @@ func (c rgbColor) SaveColor() error {
 
 // GenerateOtherFormat
 //		* Save the color into an other format
-func (c rgbColor) GenerateOtherFormat(formatName string) {
+func (c rgbColor) GenerateOtherFormat(formatName string) *HueStruct {
 	switch formatName {
 	case "hue":
-		c.rgbToHue()
+		return c.rgbToHue()
 	default:
 		fmt.Println("the format is incorrect")
+		return nil
 	}
 }
-
-

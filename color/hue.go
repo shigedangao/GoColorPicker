@@ -6,9 +6,16 @@ import (
 	"math"
 )
 
-func (c rgbColor) rgbToHue() float64 {
+// Define the hue and it's function
+type HueStruct struct {
+	Angle      int
+	Saturation float64
+	Luminace   float64
+}
+
+func (c rgbColor) rgbToHue() *HueStruct {
 	var s float64
-	// Algorithm from Numa.nu
+	// Calcul step from Niwa.nu
 
 	// determinate the min max value
 	rV := float64(c.red) / 255
@@ -21,7 +28,7 @@ func (c rgbColor) rgbToHue() float64 {
 	// If min and max is equal it mean that there's no saturation
 	// Therefore no hue
 	if min == max {
-		return 0
+		return nil
 	}
 
 	luminace := (min + max) / 2
@@ -31,14 +38,17 @@ func (c rgbColor) rgbToHue() float64 {
 		s = (max - min) / (2 - (max - min))
 	}
 
+	fmt.Println("saturation equal to ", s)
+
 	// Get the color which it's value is higher than the other
 	maxColorName := getMaxColor(max, colorFloatArray)
 	hue, _ := calcHue(maxColorName, colorFloatArray, max, min)
-	fmt.Println(hue)
-	fmt.Println(s)
 
-	return 1
+	// filling our struct with the rest of the parameters
+	hue.Saturation = s
+	hue.Luminace = luminace
 
+	return hue
 }
 
 // GetMinMax
@@ -94,7 +104,7 @@ func getMaxColor(maxValue float64, colorValue []float64) string {
 // --> max float64
 // --> min float64
 // @ int
-func calcHue(colorName string, colorValue []float64, max float64, min float64) (int, error) {
+func calcHue(colorName string, colorValue []float64, max float64, min float64) (*HueStruct, error) {
 	var hue float64
 	switch colorName {
 	case "red":
@@ -104,7 +114,7 @@ func calcHue(colorName string, colorValue []float64, max float64, min float64) (
 	case "blue":
 		hue = 4 + ((colorValue[0] - colorValue[1]) / (max - min))
 	default:
-		return 0, errors.New("no colorname provide")
+		return nil, errors.New("no colorname provide")
 	}
 
 	fmt.Println(hue)
@@ -114,5 +124,9 @@ func calcHue(colorName string, colorValue []float64, max float64, min float64) (
 		hue += 360
 	}
 
-	return int(hue), nil
+	newHue := &HueStruct{
+		Angle: int(hue),
+	}
+
+	return newHue, nil
 }

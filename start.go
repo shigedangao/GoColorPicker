@@ -36,6 +36,10 @@ func main() {
 	c.SaveColor()
 	firstSample.SaveColor()
 
-	c.GenerateOtherFormat("hue")
-	fmt.Println("daa")
+	hueValue := c.GenerateOtherFormat("hue")
+	fmt.Println("HUE is equal to ", hueValue.Saturation)
+
+	// now that we have a hue we can get the HSL
+
+	hueValue.GetHSL()
 }
