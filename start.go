@@ -25,9 +25,6 @@ func main() {
 		fmt.Println("an error happened while converting the color")
 	}
 
-	//fmt.Println(c)
-	//fmt.Println(firstSample)
-
 	// try to convert an rgb color to an hexa
 	hexa := c.ConvertRGBtoHexa()
 	fmt.Println(hexa)
@@ -44,4 +41,20 @@ func main() {
 	// Get the HSL
 	_, hsl := hueValue.GetHSL()
 	fmt.Println(hsl)
+
+	// Generate shade
+	shade := c.GenerateShade(4)
+	// Generate tint
+	tint := c.GenerateTint(4)
+	// print the shade and the tint
+	fmt.Println("shade", shade)
+	fmt.Println("tint", tint)
+
+	// create a ycbcr
+	ycbcr := c.ConvertYCbCr()
+	fmt.Println("ycbcr", ycbcr)
+
+	// convert it back to rgb
+	rgb := ycbcr.ConvertToRGB()
+	fmt.Println("rgb", rgb)
 }
