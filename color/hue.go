@@ -13,6 +13,10 @@ type HueStruct struct {
 	Luminace   float64
 }
 
+// rgbToHue
+// 		* Based function to convert a RGB to HUE
+// --> (c rgbColor)
+// @ *HueStruct (pointer)
 func (c rgbColor) rgbToHue() *HueStruct {
 	var s float64
 	// Calcul step from Niwa.nu
@@ -80,6 +84,11 @@ func getMinMax(colorValue []float64) (float64, float64) {
 	return min, max
 }
 
+// GetMaxColor
+//		* Return the max color between RED, GREEN and BLUE
+// --> maxValue float64
+// --> colorValue []float64
+// @ string
 func getMaxColor(maxValue float64, colorValue []float64) string {
 
 	for i := 0; i < len(colorValue); i++ {
@@ -117,7 +126,6 @@ func calcHue(colorName string, colorValue []float64, max float64, min float64) (
 		return nil, errors.New("no colorname provide")
 	}
 
-	fmt.Println(hue)
 	hue = hue * 60
 
 	if hue < 0 {

@@ -41,5 +41,7 @@ func main() {
 
 	// now that we have a hue we can get the HSL
 
-	hueValue.GetHSL()
+	// Get the HSL
+	_, hsl := hueValue.GetHSL()
+	fmt.Println(hsl)
 }

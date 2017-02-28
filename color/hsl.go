@@ -2,25 +2,24 @@ package colorHelper
 
 import (
 	"errors"
-	"fmt"
 )
 
 // GetHSL
 //      * Get the HSL value from the HUE
 // @ error
-func (h *HueStruct) GetHSL() error {
+func (h *HueStruct) GetHSL() (error, []float64) {
 
 	// if the luminace and the satuaration is equal to 0 there's an error somewhere...
 	if h.Luminace == 0 || h.Saturation == 0 {
 		// Dereference our pointer as the value is wrong
 		*h = HueStruct{}
 
-		return errors.New("the hue struct miss some datas deferencing the pointer")
+		return errors.New("the hue struct miss some datas deferencing the pointer"), nil
 	}
 
-	calcHSL(h.Luminace, h.Saturation, h.Angle)
+	hsl := calcHSL(h.Luminace, h.Saturation, h.Angle)
 
-	return nil
+	return nil, hsl
 }
 
 // calcHSL
@@ -28,10 +27,11 @@ func (h *HueStruct) GetHSL() error {
 // --> l float64
 // --> sat float64
 // --> hueAngle int
-func calcHSL(l float64, sat float64, hueAngle int) {
+func calcHSL(l float64, sat float64, hueAngle int) []float64 {
 	var (
 		tmpHSL     float64
 		tempColors []float64
+		hsl        []float64
 	)
 
 	// We convert the data to float32 in order to remove the memory footprint
@@ -58,10 +58,18 @@ func calcHSL(l float64, sat float64, hueAngle int) {
 		}
 	}
 
-	res := getRightFormula(tempColors, tmpHSL, tempHSLsecond)
-	fmt.Println(res)
+	CalculateHSLFunc := getRightFormula(tempColors, tmpHSL, tempHSLsecond)
+	hsl = CalculateHSLFunc()
+
+	return hsl
 }
 
+// GetRightFormula
+// 		* Calculate the HSl using the right formula
+// --> tempColor []float64
+// --> tempHSL []float64
+// --> templHSLSecond []float64
+// @ func, []float64
 func getRightFormula(tempColor []float64, tempHSL float64, tempHSLSecond float64) func() []float64 {
 
 	colorHSLValue := make([]float64, 3)
@@ -84,8 +92,8 @@ func getRightFormula(tempColor []float64, tempHSL float64, tempHSLSecond float64
 	}
 
 	return func() []float64 {
-		for _, hsl := range colorHSLValue {
-			hsl = hsl * 255
+		for idx, hsl := range colorHSLValue {
+			colorHSLValue[idx] = hsl * 255
 		}
 
 		return colorHSLValue
