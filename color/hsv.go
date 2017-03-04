@@ -57,6 +57,10 @@ func (h hsv) HsvToRgb() (error, *rgbColor) {
 	return nil, rgb
 }
 
+// calcRgbFromHsv
+// 		* Calculate RGB from HSV
+// --> (h hsv)
+// @ *rgbColor
 func (h hsv) calcRgbFromHsv(max float64, min float64, z float64) *rgbColor {
 
 	var (
@@ -99,4 +103,21 @@ func (h hsv) calcRgbFromHsv(max float64, min float64, z float64) *rgbColor {
 	}
 
 	return rgb
+}
+
+// Percent
+// 		* Convert the raw float to a %
+//		* As there's only these function as common i don't use interfaces.. should i ?
+// --> (h hsv)
+// @ int, error
+func (h hsv) Percent(valueWanted string) (int, error) {
+
+	switch valueWanted {
+	case "Saturation":
+		return int(h.s * 100), nil
+	case "Value":
+		return int(h.v * 100), nil
+	}
+
+	return 0, errors.New("The value is not present withing the struct")
 }

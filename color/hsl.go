@@ -2,17 +2,68 @@ package colorHelper
 
 import (
 	"errors"
+	"fmt"
 )
+
+// Define the hue and it's function
+type HslStruct struct {
+	Angle      int
+	Saturation float64
+	Luminace   float64
+}
+
+// rgbToHue
+// 		* Based function to convert a RGB to HUE
+// --> (c rgbColor)
+// @ *HueStruct (pointer)
+func (c rgbColor) RgbToHsl() *HslStruct {
+	var s float64
+	// Calcul step from Niwa.nu
+
+	// determinate the min max value
+	rV := float64(c.red) / 255
+	gV := float64(c.green) / 255
+	bV := float64(c.blue) / 255
+
+	colorFloatArray := []float64{rV, gV, bV}
+	min, max := getMinMax(colorFloatArray)
+
+	// If min and max is equal it mean that there's no saturation
+	// Therefore no hue
+	if min == max {
+		return nil
+	}
+
+	luminace := (min + max) / 2
+	if luminace < 0.5 {
+		s = (max - min) / (max + min)
+	} else {
+		s = (max - min) / (2 - (max - min))
+	}
+
+	fmt.Println("saturation equal to ", s)
+
+	// Get the color which it's value is higher than the other
+	maxColorName := getMaxColor(max, colorFloatArray)
+	// Calculate the hue
+	hue, _ := calcHue(maxColorName, colorFloatArray, max, min)
+
+	// filling our struct with the rest of the parameters
+	hue.Saturation = s
+	hue.Luminace = luminace
+
+	return hue
+}
 
 // GetHSL
 //      * Get the HSL value from the HUE
 // @ error
-func (h *HueStruct) GetHSL() (error, []float64) {
+func (h *HslStruct) GetHSL() (error, []float64) {
 
 	// if the luminace and the satuaration is equal to 0 there's an error somewhere...
 	if h.Luminace == 0 || h.Saturation == 0 {
 		// Dereference our pointer as the value is wrong
-		*h = HueStruct{}
+		*h = HslStruct{}
 
 		return errors.New("the hue struct miss some datas deferencing the pointer"), nil
 	}
@@ -99,4 +150,24 @@ func getRightFormula(tempColor []float64, tempHSL float64, tempHSLSecond float64
 
 		return colorHSLValue
 	}
+}
+
+// Percent
+// 		* Convert the raw float to a %
+//		* As there's only these function as common i don't use interfaces.. should i ?
+// --> (h *HueStruct)
+// @ int, error
+func (h *HslStruct) Percent(valueWanted string) (int, error) {
+	if h == nil {
+		return 0, errors.New("HSL is empty")
+	}
+
+	switch valueWanted {
+	case "Luminace":
+		return int(h.Luminace * 100), nil
+	case "Saturation":
+		return int(h.Saturation * 100), nil
+	}
+
+	return 0, errors.New("The value is not present withing the struct")
 }

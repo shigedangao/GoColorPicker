@@ -2,7 +2,6 @@ package colorHelper
 
 import (
 	"errors"
-	"fmt"
 	"math"
 	"reflect"
 	"strconv"
@@ -95,16 +94,4 @@ func (c rgbColor) SaveColor() error {
 	}
 
 	return errors.New("the store is already full")
-}
-
-// GenerateOtherFormat
-//		* Save the color into an other format
-func (c rgbColor) GenerateOtherFormat(formatName string) *HueStruct {
-	switch formatName {
-	case "hue":
-		return c.rgbToHue()
-	default:
-		fmt.Println("the format is incorrect")
-		return nil
-	}
 }

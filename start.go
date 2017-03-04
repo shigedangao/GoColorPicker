@@ -33,14 +33,16 @@ func main() {
 	c.SaveColor()
 	firstSample.SaveColor()
 
-	hueValue := c.GenerateOtherFormat("hue")
-	fmt.Println("HUE is equal to ", hueValue)
+	hslValue := c.RgbToHsl()
+	fmt.Println("HUE is equal to ", hslValue)
 
 	// now that we have a hue we can get the HSL
 
 	// Get the HSL
-	_, hsl := hueValue.GetHSL()
-	fmt.Println(hsl)
+	_, hue := hslValue.GetHSL()
+	fmt.Println("hsl value", hue)
+	percentHsl, _ := hslValue.Percent("Luminace")
+	fmt.Println("percent hsl luminace", percentHsl)
 
 	// Generate shade
 	shade := c.GenerateShade(4)
@@ -69,6 +71,9 @@ func main() {
 	// RGB to hsv
 	_, hsv := c.RgbToHsv()
 	fmt.Println("rgb to hsv", hsv)
+	// get the percent of the hsv
+	percentHSV, _ := hsv.Percent("Value")
+	fmt.Println("percent hsv value", percentHSV)
 
 	// HSV to Rgb
 
