@@ -132,6 +132,7 @@ func calcHue(colorName string, colorValue []float64, max float64, min float64) (
 		hue += 360
 	}
 
+	fmt.Println("hue valluee", hue)
 	newHue := &HueStruct{
 		Angle: int(hue),
 	}

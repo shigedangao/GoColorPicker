@@ -34,7 +34,7 @@ func main() {
 	firstSample.SaveColor()
 
 	hueValue := c.GenerateOtherFormat("hue")
-	fmt.Println("HUE is equal to ", hueValue.Saturation)
+	fmt.Println("HUE is equal to ", hueValue)
 
 	// now that we have a hue we can get the HSL
 
@@ -57,4 +57,22 @@ func main() {
 	// convert it back to rgb
 	rgb := ycbcr.ConvertToRGB()
 	fmt.Println("rgb", rgb)
+
+	// get the cymk color
+	cymk := rgb.RgbToCymk()
+	fmt.Println("cymk ", cymk)
+
+	// cymk to rgb
+	rgbCy := cymk.CymkToRgb()
+	fmt.Println("cymk to rgb", rgbCy)
+
+	// RGB to hsv
+	_, hsv := c.RgbToHsv()
+	fmt.Println("rgb to hsv", hsv)
+
+	// HSV to Rgb
+
+	e, rgbHsv := hsv.HsvToRgb()
+	fmt.Println("error : ", e)
+	fmt.Println("hsv to rgb", rgbHsv)
 }

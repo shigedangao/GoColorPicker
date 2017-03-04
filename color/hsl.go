@@ -24,6 +24,7 @@ func (h *HueStruct) GetHSL() (error, []float64) {
 
 // calcHSL
 //		* Calculate the HSL
+//		* @TODO Create an own structure for the HSL
 // --> l float64
 // --> sat float64
 // --> hueAngle int
