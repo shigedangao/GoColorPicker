@@ -1,14 +1,15 @@
 language: go 
 go_import_path: github.com/MarcInthaamnouay/GoColorPicker
+sudo: false
 go: 
   - 1.8
-
-env:
-  - "GOPATH=/home/travis/gopath/src/github.com/MarcInthaamnouay/GoColorPicker"
 
 install: 
   # Install the dependencies for testing 
   - go get github.com/stretchr/testify
+
+before_install:
+  - export GOPATH=/home/travis/gopath/src/github.com/MarcInthaamnouay/GoColorPicker
 
 before_script:
   - ls -la
