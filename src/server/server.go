@@ -25,8 +25,11 @@ func MakeServer() {
 	rgbToHue := conversionHandler("rgbToHue")
 	mux.Handle("/convert/rgbToHue", rgbToHue)
 
-	// handle rgb to hsl route
+	// handle rgb to hexa
 
+	mux.HandleFunc("/convert/rgbToHex", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Rgb to hexa !"))
+	})
 	// handle the template
 
 	log.Fatal(http.ListenAndServe(":1698", mux))
