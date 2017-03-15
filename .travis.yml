@@ -3,6 +3,9 @@ go_import_path: github.com/MarcInthaamnouay/GoColorPicker
 go: 
   - 1.8
 
+env:
+  - "GOPATH=/home/travis/gopath/src/github.com/MarcInthaamnouay/GoColorPicker"
+
 install: 
   # Install the dependencies for testing 
   - go get github.com/stretchr/testify
