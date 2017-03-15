@@ -11,6 +11,7 @@ func conversionHandler(typeName string) http.Handler {
 
 	// we can make some call here...
 	fn := func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("hello everyone !"))
 	}
 
 	return http.HandlerFunc(fn)
