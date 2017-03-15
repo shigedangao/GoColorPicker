@@ -7,7 +7,7 @@ install:
   - go get github.com/stretchr/testify
 
 before_script:
-  - go build install/start.go
+  - go install src/start.go
 
 script: 
   # Launch the go test 
