@@ -4,7 +4,7 @@ go:
   - 1.8
 
 env:
- - "PATH=/home/travis/gopath/bin:$PATH"
+  - "GOPATH=/home/travis/gopath/src/github.com/MarcInthaamnouay/GoColorPicker"
 
 install: 
   # Install the dependencies for testing 
@@ -12,8 +12,9 @@ install:
 
 before_script:
   - ls -la
+  - pwd
   - echo $GOPATH
-  - go install src/start.go
+  - go build src/start.go
 
 script: 
   # Launch the go test 
