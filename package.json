@@ -1,0 +1,15 @@
+{
+  "name": "colorpicker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./electron/js/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "go run src/start.go | ./node_modules/.bin/electron ."
+  },
+  "author": "Marc Intha-amnouay",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^1.6.2"
+  }
+}
