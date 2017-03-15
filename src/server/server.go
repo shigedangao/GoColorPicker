@@ -30,7 +30,11 @@ func MakeServer() {
 	mux.HandleFunc("/convert/rgbToHex", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Rgb to hexa !"))
 	})
+
 	// handle the template
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("here we should handle the basic template :).."))
+	})
 
 	log.Fatal(http.ListenAndServe(":1698", mux))
 }
