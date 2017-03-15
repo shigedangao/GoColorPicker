@@ -1,0 +1,14 @@
+language: go 
+go: 
+  - 1.8
+
+install: 
+  # Install the dependencies for testing 
+  - go get github.com/stretchr/testify
+
+before_script:
+  - go build src/start.go
+
+script: 
+  # Launch the go test 
+  - go test -v src/test/color_test.go
