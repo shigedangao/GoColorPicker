@@ -10,3 +10,9 @@ describe('myApp', () => {
         assert.equal('colorPicker', myApp.name);
     });
 });
+
+describe('author', () => {
+    it('should return true for author', () => {
+        assert.equal('Marc', myApp.author);
+    });
+});
