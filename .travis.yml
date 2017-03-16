@@ -11,8 +11,6 @@ before_install:
   # Download & install nvm 
   - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
   - nvm install node
-  - npm install --global mocha
-  - npm install --global should 
 
 install: 
   # Install the dependencies for testing 
@@ -20,6 +18,8 @@ install:
 
 before_script:
   - go build src/start.go
+  - npm install --save-dev mocha
+  - npm install --save-dev should 
 
 script: 
   # Launch the go test 
