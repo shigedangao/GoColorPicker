@@ -1,6 +1,5 @@
 # set the default os that we want to use 
-os: 
-  - osx
+os: osx
 
 # set the language 
 language: go 
@@ -17,15 +16,13 @@ before_install:
   - export GOPATH=/home/travis/gopath/src/github.com/MarcInthaamnouay/GoColorPicker
   # Download & install nvm 
   - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
-  - export NVM_DIR="$HOME/.nvm" [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" 
+  - export NVM_DIR="$HOME/.nvm" 
+  - [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" 
   - nvm install node
   - npm install --global mocha
   - npm install --global should 
 
 before_script:
-  - ls -la
-  - pwd
-  - echo $GOPATH
   - go build src/start.go
 
 script: 

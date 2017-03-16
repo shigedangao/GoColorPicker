@@ -81,6 +81,29 @@ func (c rgbColor) ConvertRGBtoHexa() string {
 	return hexValue
 }
 
+// Hexa To Rgb
+// 		* Convert an hexa value to an Rgb value
+// --> hex string
+// @ rgbColor{}
+func HexaToRgb(hex string) rgbColor {
+	// Split the hexa
+	var hexaMap = make(map[string]string)
+	hexaMap["red"] = hex[:2]
+	hexaMap["green"] = hex[2:4]
+	hexaMap["blue"] = hex[4:6]
+
+	// convert the value into a uint 16
+	red, _ := strconv.ParseInt(hexaMap["red"], 16, 32)
+	green, _ := strconv.ParseInt(hexaMap["green"], 16, 32)
+	blue, _ := strconv.ParseInt(hexaMap["blue"], 16, 32)
+
+	return rgbColor{
+		red:   uint8(red),
+		green: uint8(green),
+		blue:  uint8(blue),
+	}
+}
+
 // SaveColor
 //		* Save the color into an array of store color
 // --> (c rgbColor)
