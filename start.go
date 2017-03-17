@@ -14,7 +14,7 @@ import (
 	"fmt"
 )
 
-func main() {
+func colorSample() {
 	// make some random color
 	firstSample := colorHelper.MakeColorFromInput(255, 255, 255)
 
@@ -29,12 +29,20 @@ func main() {
 	hexa := c.ConvertRGBtoHexa()
 	fmt.Println(hexa)
 
+	// hexa to rgb
+	rgbFromHexa := colorHelper.HexaToRgb(hexa)
+	fmt.Println("rgb from hexa", rgbFromHexa)
+
 	// save a color in the store
 	c.SaveColor()
 	firstSample.SaveColor()
 
 	hslValue := c.RgbToHsl()
 	fmt.Println("HUE is equal to ", hslValue)
+
+	// hsl to rgb
+	rgbHSL, _ := hslValue.HslToRGB()
+	fmt.Println("HSL to rgb equal", rgbHSL)
 
 	// now that we have a hue we can get the HSL
 
@@ -69,7 +77,7 @@ func main() {
 	fmt.Println("cymk to rgb", rgbCy)
 
 	// RGB to hsv
-	_, hsv := c.RgbToHsv()
+	hsv, _ := c.RgbToHsv()
 	fmt.Println("rgb to hsv", hsv)
 	// get the percent of the hsv
 	percentHSV, _ := hsv.Percent("Value")
@@ -80,4 +88,9 @@ func main() {
 	e, rgbHsv := hsv.HsvToRgb()
 	fmt.Println("error : ", e)
 	fmt.Println("hsv to rgb", rgbHsv)
+}
+
+func main() {
+	colorSample()
+	//serverManager.MakeServer()
 }

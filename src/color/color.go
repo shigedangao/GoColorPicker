@@ -9,12 +9,17 @@ import (
 
 // Outercolor define a random property of a color to be based on ...
 // We don't use the pointer as we does not play with the type for the moment...
-// Also we can directly let our struct access from the main file...
-// (!) Should I ?
 type rgbColor struct {
 	red   uint8
 	green uint8
 	blue  uint8
+}
+
+type ConvertToRGB interface {
+	HexaToRgb() rgbColor
+	CymkToRgb() rgbColor
+	HsvToRgb() (*rgbColor, error)
+	ConvertToRGB() rgbColor
 }
 
 // Create a nil hue store, if the user does not it, it's still nil and not allocated in the memory
