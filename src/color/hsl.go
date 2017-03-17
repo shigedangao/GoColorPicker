@@ -3,6 +3,7 @@ package colorHelper
 import (
 	"errors"
 	"fmt"
+	"math"
 )
 
 // Define the hue and it's function
@@ -117,6 +118,7 @@ func calcHSL(l float64, sat float64, hueAngle int) []float64 {
 }
 
 // GetRightFormula
+// @ TODO --> Create an interface
 // 		* Calculate the HSl using the right formula
 // --> tempColor []float64
 // --> tempHSL []float64
@@ -170,4 +172,73 @@ func (h *HslStruct) Percent(valueWanted string) (int, error) {
 	}
 
 	return 0, errors.New("The value is not present withing the struct")
+}
+
+////////////////////// Convert HSL to RGB //////////////////////
+
+// HslToRGB - Convert an HSL Struct into an RGB Struct
+func (h *HslStruct) HslToRGB() (rgbColor, error) {
+	if h == nil {
+		return rgbColor{}, errors.New("Hsl struct is empty")
+	}
+
+	c := (1 - math.Abs((2*h.Luminace)-1)) * h.Saturation
+	x := c * (1 - math.Abs(math.Mod(h.Luminace/60, 2)-1))
+	m := h.Luminace - c/2
+
+	// get the right r'g'b'
+	r, g, b := h.getRightFormula(c, x)
+
+	return rgbColor{
+		red:   uint8((r + m) * 255),
+		green: uint8((g + m) * 255),
+		blue:  uint8((b + m) * 255),
+	}, nil
+}
+
+func (h *HslStruct) getRightFormula(chrome float64, interm float64) (float64, float64, float64) {
+
+	var (
+		red   float64
+		green float64
+		blue  float64
+	)
+
+	switch {
+	case h.Angle >= 0 && h.Angle < 60:
+		red = chrome
+		green = interm
+		blue = 0
+		break
+	case h.Angle >= 60 && h.Angle < 120:
+		red = interm
+		green = chrome
+		blue = 0
+		break
+	case h.Angle >= 120 && h.Angle < 180:
+		red = 0
+		green = chrome
+		blue = interm
+		break
+	case h.Angle >= 180 && h.Angle < 240:
+		red = 0
+		green = interm
+		blue = chrome
+		break
+	case h.Angle >= 240 && h.Angle < 300:
+		red = interm
+		green = 0
+		blue = chrome
+		break
+	case h.Angle >= 300 && h.Angle < 360:
+		red = chrome
+		green = 0
+		blue = interm
+	default:
+		red = 0
+		green = 0
+		blue = 0
+	}
+
+	return red, green, blue
 }
