@@ -8,7 +8,6 @@ import (
 // Handling the conversion
 // I use closure to make it much more cleaner to user
 func conversionHandler(typeName string) http.Handler {
-
 	// we can make some call here...
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("hello everyone !"))
@@ -17,6 +16,8 @@ func conversionHandler(typeName string) http.Handler {
 	return http.HandlerFunc(fn)
 }
 
+// Make Server
+//		* Function which launch the server
 func MakeServer() {
 	mux := http.NewServeMux()
 
@@ -26,10 +27,8 @@ func MakeServer() {
 	mux.Handle("/convert/rgbToHue", rgbToHue)
 
 	// handle rgb to hexa
-
-	mux.HandleFunc("/convert/rgbToHex", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Rgb to hexa !"))
-	})
+	rgbToHexa := conversionHandler("rgbToHexa")
+	mux.Handle("/convert/hex", rgbToHexa)
 
 	// handle the template
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

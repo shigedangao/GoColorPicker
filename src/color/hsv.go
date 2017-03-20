@@ -6,19 +6,18 @@ import (
 	"math"
 )
 
-type hsv struct {
+// hsv Object
+type Hsv struct {
 	h int
 	s float64
 	v float64
 }
 
-// RgbToHsv
-//	* Convert an RGB Color to HSV
-//	* HSV represent Hue, Saturation, Value
-// --> (c rgbColor)
-func (c rgbColor) RgbToHsv() (error, hsv) {
+// RgbToHsv convert an RgbColor Object to an Hsv object pointer
+// Return *Hsv || error
+func (c RgbColor) RgbToHsv() (*Hsv, error) {
 	// first get the min max value
-	color := []float64{float64(c.red), float64(c.green), float64(c.blue)}
+	color := []float64{float64(c.Red), float64(c.Green), float64(c.Blue)}
 	min, max := getMinMax(color)
 
 	// creating the HSV value
@@ -29,19 +28,21 @@ func (c rgbColor) RgbToHsv() (error, hsv) {
 	fmt.Println("hue str", hueStruct)
 
 	if err != nil {
-		return errors.New("An error happened while converting the RGB Color to HSV"), hsv{}
+		return nil, errors.New("An error happened while converting the RGB Color to HSV")
 	}
 
-	hsvStruct := hsv{
+	hsvStruct := &Hsv{
 		h: hueStruct.Angle,
 		s: 1 - min/max,
 		v: max / 255,
 	}
 
-	return nil, hsvStruct
+	return hsvStruct, nil
 }
 
-func (h hsv) HsvToRgb() (error, *rgbColor) {
+// ToRGB Convert an Hsv Object to an Rgb one
+// Return *RgbColor || error
+func (h *Hsv) ToRGB() (*RgbColor, error) {
 	max := 255 * h.v
 	min := max * (1 - h.s)
 
@@ -51,17 +52,14 @@ func (h hsv) HsvToRgb() (error, *rgbColor) {
 	rgb := h.calcRgbFromHsv(max, min, z)
 
 	if rgb == nil {
-		return errors.New("An error happened while converting hsv to rgb"), nil
+		return nil, errors.New("An error happened while converting hsv to rgb")
 	}
 
-	return nil, rgb
+	return rgb, nil
 }
 
-// calcRgbFromHsv
-// 		* Calculate RGB from HSV
-// --> (h hsv)
-// @ *rgbColor
-func (h hsv) calcRgbFromHsv(max float64, min float64, z float64) *rgbColor {
+// calcRgbFromHsv calc Hsv value from RgbColor Object
+func (h *Hsv) calcRgbFromHsv(max float64, min float64, z float64) *RgbColor {
 
 	var (
 		red   float64
@@ -96,21 +94,19 @@ func (h hsv) calcRgbFromHsv(max float64, min float64, z float64) *rgbColor {
 		blue = z + min
 	}
 
-	rgb := &rgbColor{
-		red:   uint8(red),
-		green: uint8(green),
-		blue:  uint8(blue),
+	rgb := &RgbColor{
+		Red:   uint8(red),
+		Green: uint8(green),
+		Blue:  uint8(blue),
 	}
 
 	return rgb
 }
 
-// Percent
-// 		* Convert the raw float to a %
-//		* As there's only these function as common i don't use interfaces.. should i ?
-// --> (h hsv)
-// @ int, error
-func (h hsv) Percent(valueWanted string) (int, error) {
+// Percent convert an hsv value to a percent value given the params that we want
+// Params valueWanted
+// Return int || error
+func (h *Hsv) Percent(valueWanted string) (int, error) {
 
 	switch valueWanted {
 	case "Saturation":

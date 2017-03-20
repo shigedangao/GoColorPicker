@@ -19,7 +19,7 @@ func colorSample() {
 	firstSample := colorHelper.MakeColorFromInput(255, 255, 255)
 
 	// try to update the color and see the effect
-	err, c := firstSample.UpdateCurrentColor(24, 98, 118)
+	c, err := firstSample.UpdateCurrentColor(190, 120, 200)
 
 	if err != nil {
 		fmt.Println("an error happened while converting the color")
@@ -29,57 +29,79 @@ func colorSample() {
 	hexa := c.ConvertRGBtoHexa()
 	fmt.Println(hexa)
 
+	// hexa to rgb
+	rgbFromHexa, _ := colorHelper.ToRGB(hexa)
+	fmt.Println("rgb from hexa", rgbFromHexa)
+
 	// save a color in the store
 	c.SaveColor()
 	firstSample.SaveColor()
 
 	hslValue := c.RgbToHsl()
-	fmt.Println("HUE is equal to ", hslValue)
+	fmt.Println("HSL is equal to", hslValue)
+
+	// hsl to rgb
+	rgbHSL, _ := hslValue.ToRGB()
+	fmt.Println("HSL to rgb equal", rgbHSL)
 
 	// now that we have a hue we can get the HSL
 
-	// Get the HSL
-	_, hue := hslValue.GetHSL()
-	fmt.Println("hsl value", hue)
 	percentHsl, _ := hslValue.Percent("Luminace")
 	fmt.Println("percent hsl luminace", percentHsl)
 
-	// Generate shade
-	shade := c.GenerateShade(4)
+	// now let just create a reference of our interface and test if it works...
+	hextest := &colorHelper.HslStruct{
+		Angle:      292,
+		Saturation: 0.421,
+		Luminace:   0.627,
+	}
+	var i colorHelper.Color
+	i = hextest
+	rgbInterfaceTest, _ := i.ToRGB()
+
+	fmt.Println(rgbInterfaceTest)
+
+	// // Generate shade
+	shade, e := c.GenerateShadeTint(4, "shade")
+
+	if e != nil {
+		fmt.Println("error")
+	}
+
 	// Generate tint
-	tint := c.GenerateTint(4)
-	// print the shade and the tint
+	tint, _ := c.GenerateShadeTint(4, "tint")
+	// // print the shade and the tint
 	fmt.Println("shade", shade)
 	fmt.Println("tint", tint)
 
-	// create a ycbcr
-	ycbcr := c.ConvertYCbCr()
-	fmt.Println("ycbcr", ycbcr)
+	// // create a ycbcr
+	// ycbcr := c.ConvertYCbCr()
+	// fmt.Println("ycbcr", ycbcr)
 
-	// convert it back to rgb
-	rgb := ycbcr.ConvertToRGB()
-	fmt.Println("rgb", rgb)
+	// // convert it back to rgb
+	// rgb := ycbcr.ConvertToRGB()
+	// fmt.Println("rgb", rgb)
 
-	// get the cymk color
-	cymk := rgb.RgbToCymk()
-	fmt.Println("cymk ", cymk)
+	// // get the cymk color
+	// cymk := rgb.RgbToCymk()
+	// fmt.Println("cymk ", cymk)
 
-	// cymk to rgb
-	rgbCy := cymk.CymkToRgb()
-	fmt.Println("cymk to rgb", rgbCy)
+	// // cymk to rgb
+	// rgbCy := cymk.CymkToRgb()
+	// fmt.Println("cymk to rgb", rgbCy)
 
-	// RGB to hsv
-	_, hsv := c.RgbToHsv()
+	// // RGB to hsv
+	hsv, _ := c.RgbToHsv()
 	fmt.Println("rgb to hsv", hsv)
-	// get the percent of the hsv
-	percentHSV, _ := hsv.Percent("Value")
-	fmt.Println("percent hsv value", percentHSV)
+	// // get the percent of the hsv
+	// percentHSV, _ := hsv.Percent("Value")
+	// fmt.Println("percent hsv value", percentHSV)
 
-	// HSV to Rgb
+	// // HSV to Rgb
 
-	e, rgbHsv := hsv.HsvToRgb()
-	fmt.Println("error : ", e)
-	fmt.Println("hsv to rgb", rgbHsv)
+	// e, rgbHsv := hsv.HsvToRgb()
+	// fmt.Println("error : ", e)
+	// fmt.Println("hsv to rgb", rgbHsv)
 }
 
 func main() {

@@ -1,61 +1,66 @@
 package colorHelper
 
-// generateTint
-//      * Generate a tint of color
-// --> (c rgbColor)
-// --> factor float32
-// --> @TODO we might need to check if the struct is empty
-// @
-func (c rgbColor) GenerateTint(factor float32) []rgbColor {
-	// Array of shade of color based on the factor
-	var (
-		i    int
-		tint = make([]rgbColor, uint8(factor))
-	)
+import (
+	"errors"
+)
 
-	for i < int(factor) {
-		red := ((255 - float32(c.red)) * (float32(i+1) / factor))
-		green := ((255 - float32(c.green)) * (float32(i+1) / factor))
-		blue := ((255 - float32(c.blue)) * (float32(i+1) / factor))
+// GenerateShadeTint generate a shade or a tint
+// Params factor : int && genType : String
+// Return []RgbColor || error
+func (c RgbColor) GenerateShadeTint(factor int, genType string) ([]RgbColor, error) {
 
-		tint[i] = rgbColor{
-			red:   c.red + uint8(red),
-			green: c.green + uint8(green),
-			blue:  c.blue + uint8(blue),
-		}
+	colors := c.calculateColors(factor, genType)
 
-		i++
+	if colors == nil {
+		return nil, errors.New("An error happened while generating the colors")
 	}
 
-	return tint
+	return colors, nil
 }
 
-// generateShade
-//      * Generate a shade of color
-// --> (c rgbColor)
-// --> factor float32
-// --> @TODO we might need to check if the struct is empty
-// @
-func (c rgbColor) GenerateShade(factor float32) []rgbColor {
-	// Array of shade of color based on the factor
+// calculateColors calculate the shade of colors
+// (!) This is an unexported function link to the RgbColor Object
+// Params factor : Int && genType string
+// Return []RgbColor
+func (c RgbColor) calculateColors(factor int, genType string) []RgbColor {
 	var (
-		i     int
-		shade = make([]rgbColor, uint8(factor))
+		colors = make([]RgbColor, uint8(factor))
 	)
 
-	for i < int(factor) {
-		red := float32(c.red) * (float32(i+1) / factor)
-		green := float32(c.green) * (float32(i+1) / factor)
-		blue := float32(c.blue) * (float32(i+1) / factor)
-
-		shade[i] = rgbColor{
-			red:   uint8(red),
-			green: uint8(green),
-			blue:  uint8(blue),
+	for i := 0; i < factor; i++ {
+		if genType == "tint" {
+			colors[i] = RgbColor{
+				Red:   c.Red + uint8(getTint(c.Red, i, factor)),
+				Green: c.Green + uint8(getTint(c.Green, i, factor)),
+				Blue:  c.Blue + uint8(getTint(c.Blue, i, factor)),
+			}
+		} else if genType == "shade" {
+			colors[i] = RgbColor{
+				Red:   c.Red + uint8(getShade(c.Red, i, factor)),
+				Green: c.Green + uint8(getShade(c.Green, i, factor)),
+				Blue:  c.Blue + uint8(getShade(c.Blue, i, factor)),
+			}
+		} else {
+			return nil
 		}
-
-		i++
 	}
 
-	return shade
+	return colors
+}
+
+// getTint return a tint of float32
+// Return float32
+func getTint(color uint8, i int, factor int) float32 {
+
+	floatI := float32(i)
+	return (255 - float32(color)) * (float32(floatI+1) / float32(factor))
+}
+
+// getShade return a shade value of float32
+// Return float32
+func getShade(color uint8, i int, factor int) float32 {
+	floatI := float32(i)
+	floatFactor := float32(factor)
+
+	return float32(color) * (float32(floatI+1) / floatFactor)
 }

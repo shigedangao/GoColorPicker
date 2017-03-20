@@ -6,25 +6,23 @@ import (
 	"math"
 )
 
-// Define the hue and it's function
+// HslStruct Object
 type HslStruct struct {
 	Angle      int
 	Saturation float64
 	Luminace   float64
 }
 
-// rgbToHue
-// 		* Based function to convert a RGB to HUE
-// --> (c rgbColor)
-// @ *HueStruct (pointer)
-func (c rgbColor) RgbToHsl() *HslStruct {
+// RgbToHsl convert an RGB to an HSL value
+// Return *HslStruct (pointer)
+// Those calculation are based on an article published on niwa.nu
+func (c RgbColor) RgbToHsl() *HslStruct {
 	var s float64
-	// Calcul step from Niwa.nu
 
 	// determinate the min max value
-	rV := float64(c.red) / 255
-	gV := float64(c.green) / 255
-	bV := float64(c.blue) / 255
+	rV := float64(c.Red) / 255
+	gV := float64(c.Green) / 255
+	bV := float64(c.Blue) / 255
 
 	colorFloatArray := []float64{rV, gV, bV}
 	min, max := getMinMax(colorFloatArray)
@@ -39,10 +37,8 @@ func (c rgbColor) RgbToHsl() *HslStruct {
 	if luminace < 0.5 {
 		s = (max - min) / (max + min)
 	} else {
-		s = (max - min) / (2 - (max - min))
+		s = (max - min) / (2 - max - min)
 	}
-
-	fmt.Println("saturation equal to ", s)
 
 	// Get the color which it's value is higher than the other
 	maxColorName := getMaxColor(max, colorFloatArray)
@@ -56,74 +52,9 @@ func (c rgbColor) RgbToHsl() *HslStruct {
 	return hue
 }
 
-// GetHSL
-//      * Get the HSL value from the HUE
-// @ error
-func (h *HslStruct) GetHSL() (error, []float64) {
-
-	// if the luminace and the satuaration is equal to 0 there's an error somewhere...
-	if h.Luminace == 0 || h.Saturation == 0 {
-		// Dereference our pointer as the value is wrong
-		*h = HslStruct{}
-
-		return errors.New("the hue struct miss some datas deferencing the pointer"), nil
-	}
-
-	hsl := calcHSL(h.Luminace, h.Saturation, h.Angle)
-
-	return nil, hsl
-}
-
-// calcHSL
-//		* Calculate the HSL
-//		* @TODO Create an own structure for the HSL
-// --> l float64
-// --> sat float64
-// --> hueAngle int
-func calcHSL(l float64, sat float64, hueAngle int) []float64 {
-	var (
-		tmpHSL     float64
-		tempColors []float64
-		hsl        []float64
-	)
-
-	// We convert the data to float32 in order to remove the memory footprint
-	if l < 0.5 {
-		tmpHSL = l * (1 + sat)
-	} else {
-		tmpHSL = l + sat - l*sat
-	}
-
-	tempHSLsecond := 2*l - tmpHSL
-	hue := float64(hueAngle) / 360
-
-	// create temporary value for each red blue and green value
-	// Grow our slice
-	tempColors = append(tempColors, hue+0.333, hue, hue-0.333)
-
-	// now we need to check whenever the value are positive or negatvie or above 1
-
-	for _, color := range tempColors {
-		if color > 1 {
-			color--
-		} else {
-			color++
-		}
-	}
-
-	CalculateHSLFunc := getRightFormula(tempColors, tmpHSL, tempHSLsecond)
-	hsl = CalculateHSLFunc()
-
-	return hsl
-}
-
-// GetRightFormula
-// @ TODO --> Create an interface
-// 		* Calculate the HSl using the right formula
-// --> tempColor []float64
-// --> tempHSL []float64
-// --> templHSLSecond []float64
-// @ func, []float64
+// getRightFormula choose the right formula and calculate it's value
+// Params tempColor []float64, tempHSL float64, tempHSLSecond float64
+// Return []float64
 func getRightFormula(tempColor []float64, tempHSL float64, tempHSLSecond float64) func() []float64 {
 
 	colorHSLValue := make([]float64, 3)
@@ -131,16 +62,12 @@ func getRightFormula(tempColor []float64, tempHSL float64, tempHSLSecond float64
 	for i := 0; i < 3; i++ {
 
 		if tempColor[i]*6 < 1 {
-
 			colorHSLValue[i] = tempHSLSecond + (tempHSL-tempHSLSecond)*6*tempColor[i]
 		} else if tempColor[i]*2 < 1 {
-
 			colorHSLValue[i] = tempHSL
 		} else if tempColor[i]*3 < 2 {
-
 			colorHSLValue[i] = tempHSLSecond + (tempHSL-tempHSLSecond)*(0.666-tempColor[i])*6
 		} else {
-
 			colorHSLValue[i] = tempHSLSecond
 		}
 	}
@@ -154,11 +81,7 @@ func getRightFormula(tempColor []float64, tempHSL float64, tempHSLSecond float64
 	}
 }
 
-// Percent
-// 		* Convert the raw float to a %
-//		* As there's only these function as common i don't use interfaces.. should i ?
-// --> (h *HueStruct)
-// @ int, error
+// Percent convert the HSL struct value to a Percent value
 func (h *HslStruct) Percent(valueWanted string) (int, error) {
 	if h == nil {
 		return 0, errors.New("HSL is empty")
@@ -174,28 +97,38 @@ func (h *HslStruct) Percent(valueWanted string) (int, error) {
 	return 0, errors.New("The value is not present withing the struct")
 }
 
-////////////////////// Convert HSL to RGB //////////////////////
-
-// HslToRGB - Convert an HSL Struct into an RGB Struct
-func (h *HslStruct) HslToRGB() (rgbColor, error) {
+// ToRGB convert an HslStruct into an RgbColor Object
+// Return RgbColor Object || error
+func (h *HslStruct) ToRGB() (RgbColor, error) {
 	if h == nil {
-		return rgbColor{}, errors.New("Hsl struct is empty")
+		return RgbColor{}, errors.New("Hsl struct is empty")
 	}
 
 	c := (1 - math.Abs((2*h.Luminace)-1)) * h.Saturation
-	x := c * (1 - math.Abs(math.Mod(h.Luminace/60, 2)-1))
+	x := c * (1 - math.Abs(math.Mod(float64(h.Angle)/60, 2)-1))
 	m := h.Luminace - c/2
 
 	// get the right r'g'b'
 	r, g, b := h.getRightFormula(c, x)
 
-	return rgbColor{
-		red:   uint8((r + m) * 255),
-		green: uint8((g + m) * 255),
-		blue:  uint8((b + m) * 255),
+	fmt.Println("green", g)
+	fmt.Println("m ", m)
+
+	rgbMap := make(map[string]float64)
+	rgbMap["red"] = (r + m) * 255
+	rgbMap["green"] = (g + m) * 255
+	rgbMap["blue"] = (b + m) * 255
+
+	return RgbColor{
+		Red:   uint8(rgbMap["red"]),
+		Green: uint8(rgbMap["green"]),
+		Blue:  uint8(rgbMap["blue"]),
 	}, nil
 }
 
+// getRightFormula return the formula to calculate the RGB color
+// Params chrome float64 || interm float64
+// Return red float64, green float64, blue float64
 func (h *HslStruct) getRightFormula(chrome float64, interm float64) (float64, float64, float64) {
 
 	var (

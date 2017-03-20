@@ -7,114 +7,114 @@ import (
 	"strconv"
 )
 
-// Outercolor define a random property of a color to be based on ...
-// We don't use the pointer as we does not play with the type for the moment...
-type rgbColor struct {
-	red   uint8
-	green uint8
-	blue  uint8
+// RgbColor is an RGB Color Object
+type RgbColor struct {
+	Red   uint8
+	Green uint8
+	Blue  uint8
 }
 
-type ConvertToRGB interface {
-	HexaToRgb() rgbColor
-	CymkToRgb() rgbColor
-	HsvToRgb() (*rgbColor, error)
-	ConvertToRGB() rgbColor
+// Color interface register a common Object that a Color can used to convert to an RGB
+type Color interface {
+	ToRGB() (RgbColor, error)
 }
 
-// Create a nil hue store, if the user does not it, it's still nil and not allocated in the memory
-// If we use make then it will have a place in hte memory
 var (
-	store   []rgbColor
+	store   []RgbColor
 	hueSqrt = math.Sqrt(3)
 )
 
-// define the constant that we need threw the package
-
-// MakeColorFromInput ...
-func MakeColorFromInput(r uint8, g uint8, b uint8) rgbColor {
-	sample := rgbColor{
-		red:   r,
-		green: g,
-		blue:  b,
+// MakeColorFromInput return a new Color
+// Return RgbColor
+func MakeColorFromInput(r uint8, g uint8, b uint8) RgbColor {
+	sample := RgbColor{
+		Red:   r,
+		Green: g,
+		Blue:  b,
 	}
 
 	return sample
 }
 
-// UpdateCurrentColor
-//      * Create and update a new color
-//      * Should we compare using the Type interface instead of convert the type into a String ?
-// --> nr Uint8
-// --> ng Uint8
-// --> nb Uint8
-// @ Error & rgbColor
-func (c rgbColor) UpdateCurrentColor(nr uint8, ng uint8, nb uint8) (error, rgbColor) {
+// UpdateCurrentColor update a color and changing it's value
+// Return RgbColor || error
+func (c RgbColor) UpdateCurrentColor(nr uint8, ng uint8, nb uint8) (RgbColor, error) {
 
 	if reflect.TypeOf(nr).String() != "uint8" {
-		return errors.New("red value is not in the valid format between 0 - 255"), rgbColor{}
+		return RgbColor{}, errors.New("red value is not in the valid format between 0 - 255")
 	}
 
-	c.red = nr
-	c.green = ng
-	c.blue = nb
+	c.Red = nr
+	c.Green = ng
+	c.Blue = nb
 
-	return nil, c
+	return c, nil
 }
 
-// ConvertRGBtoHexa
-//		* Convert an RGB Color into HEXA
-// --> (c rgbColor)
-// @ String
-func (c rgbColor) ConvertRGBtoHexa() string {
+// ConvertRGBtoHexa Convert an RGB to an Hexa value
+// Return string
+func (c RgbColor) ConvertRGBtoHexa() string {
 	var hexValue string
-	// Before converting our value to String
-	// We need to cast our Uint8 -> Int64
-	rInt := int64(c.red)
-	gInt := int64(c.green)
-	bInt := int64(c.blue)
 
-	// We directly create an array as we're not going to manipulate or extending the array (so no slice)
+	rInt := int64(c.Red)
+	gInt := int64(c.Green)
+	bInt := int64(c.Blue)
+
 	RGBArray := []int64{rInt, gInt, bInt}
 
 	for i := 0; i < len(RGBArray); i++ {
-		// convert the Int64 value into the hexa
-		// Since hex is an integer literal we can use strconv to convert it... (thanks stackoverflow)
 		hexValue += strconv.FormatInt(RGBArray[i], 16)
 	}
 
 	return hexValue
 }
 
-// Hexa To Rgb
-// 		* Convert an hexa value to an Rgb value
-// --> hex string
-// @ rgbColor{}
-func HexaToRgb(hex string) rgbColor {
+// ToRGB convert an hexa to RGB
+// Return RgbColor || error
+func ToRGB(hex string) (RgbColor, error) {
+	var (
+		red   uint8
+		green uint8
+		blue  uint8
+	)
 	// Split the hexa
 	var hexaMap = make(map[string]string)
 	hexaMap["red"] = hex[:2]
 	hexaMap["green"] = hex[2:4]
 	hexaMap["blue"] = hex[4:6]
 
-	// convert the value into a uint 16
-	red, _ := strconv.ParseInt(hexaMap["red"], 16, 32)
-	green, _ := strconv.ParseInt(hexaMap["green"], 16, 32)
-	blue, _ := strconv.ParseInt(hexaMap["blue"], 16, 32)
+	for i, value := range hexaMap {
+		tmpVal, err := strconv.ParseInt(value, 16, 32)
 
-	return rgbColor{
-		red:   uint8(red),
-		green: uint8(green),
-		blue:  uint8(blue),
+		if err != nil {
+			return RgbColor{}, errors.New("An error happened while converting the Hex to RGB")
+		}
+
+		switch i {
+		case "red":
+			red = uint8(tmpVal)
+			break
+		case "green":
+			green = uint8(tmpVal)
+			break
+		case "blue":
+			blue = uint8(tmpVal)
+			break
+		default:
+			return RgbColor{}, errors.New("Missing hex value")
+		}
 	}
+
+	return RgbColor{
+		Red:   red,
+		Green: green,
+		Blue:  blue,
+	}, nil
 }
 
-// SaveColor
-//		* Save the color into an array of store color
-// --> (c rgbColor)
-func (c rgbColor) SaveColor() error {
-	// populate the slice
-	// we allow the user to create a panel of color ranging from 0 color to 6
+// SaveColor save a color
+// Return error
+func (c RgbColor) SaveColor() error {
 	if len(store) < 6 {
 		store = append(store, c)
 

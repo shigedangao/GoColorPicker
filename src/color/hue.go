@@ -6,10 +6,10 @@ import (
 	"math"
 )
 
-// GetMinMax
-//		* Get the minimum value and the maximum value between an array of float64
-// --> colorValue []float64
-// @ float64, float64
+// getMinMax return the min and the max value between a floating point array
+// it's use to calculate the Hue
+// Params colorValue []float64
+// Return float64 || float64
 func getMinMax(colorValue []float64) (float64, float64) {
 	var (
 		min float64
@@ -35,11 +35,9 @@ func getMinMax(colorValue []float64) (float64, float64) {
 	return min, max
 }
 
-// GetMaxColor
-//		* Return the max color between RED, GREEN and BLUE
-// --> maxValue float64
-// --> colorValue []float64
-// @ string
+// getMaxColor return the color which have the maximum value
+// Params maxValue float64, colorValue float64
+// Return string (red || green || blue)
 func getMaxColor(maxValue float64, colorValue []float64) string {
 
 	for i := 0; i < len(colorValue); i++ {
@@ -57,13 +55,9 @@ func getMaxColor(maxValue float64, colorValue []float64) string {
 	return ""
 }
 
-// calcHue
-//		* Calculate the hue value
-// --> colorName string
-// --> colorValue []float64
-// --> max float64
-// --> min float64
-// @ int
+// calcHue calculate the HUE
+// Param colorName string, colorValue []float64, max float64, min float64
+// Return *HslStruct (pointer) || error
 func calcHue(colorName string, colorValue []float64, max float64, min float64) (*HslStruct, error) {
 	var hue float64
 	switch colorName {
