@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"strconv"
 )
 
 // HslStruct Object
@@ -27,13 +28,17 @@ func (c RgbColor) RgbToHsl() *HslStruct {
 	colorFloatArray := []float64{rV, gV, bV}
 	min, max := getMinMax(colorFloatArray)
 
-	// If min and max is equal it mean that there's no saturation
-	// Therefore no hue
+	// When min == max no hue value is possible only the luminance can be found
+	luminace := (min + max) / 2
+
 	if min == max {
-		return nil
+		return &HslStruct{
+			Angle:      0,
+			Saturation: 0,
+			Luminace:   luminace,
+		}
 	}
 
-	luminace := (min + max) / 2
 	if luminace < 0.5 {
 		s = (max - min) / (max + min)
 	} else {
@@ -43,13 +48,13 @@ func (c RgbColor) RgbToHsl() *HslStruct {
 	// Get the color which it's value is higher than the other
 	maxColorName := getMaxColor(max, colorFloatArray)
 	// Calculate the hue
-	hue, _ := calcHue(maxColorName, colorFloatArray, max, min)
+	hsl, _ := calcHue(maxColorName, colorFloatArray, max, min)
 
 	// filling our struct with the rest of the parameters
-	hue.Saturation = s
-	hue.Luminace = luminace
+	hsl.Saturation = s
+	hsl.Luminace = luminace
 
-	return hue
+	return hsl
 }
 
 // getRightFormula choose the right formula and calculate it's value
@@ -99,6 +104,7 @@ func (h *HslStruct) Percent(valueWanted string) (int, error) {
 
 // ToRGB convert an HslStruct into an RgbColor Object
 // Return RgbColor Object || error
+// (!) I would recommend to use the raw float value instead of an intenger (integer convert to a float which represented the % as we loose precision when converting to an RGB)
 func (h *HslStruct) ToRGB() (RgbColor, error) {
 	if h == nil {
 		return RgbColor{}, errors.New("Hsl struct is empty")
@@ -174,4 +180,24 @@ func (h *HslStruct) getRightFormula(chrome float64, interm float64) (float64, fl
 	}
 
 	return red, green, blue
+}
+
+// FormatFloat Return a representation of the HslStruct in a map
+// This can be useful if you want to deal directly with the Percent
+// (!) Use Percent if you only want to get one of the value
+func (h *HslStruct) FormatFloatToInt() (map[string]int, error) {
+	satInt, eS := strconv.Atoi(strconv.FormatFloat(h.Saturation*100, 'f', 0, 64))
+	satLum, eL := strconv.Atoi(strconv.FormatFloat(h.Luminace*100, 'f', 0, 64))
+
+	if eS != nil || eL != nil {
+		return nil, errors.New("an error happened while converting the hsl values into a map")
+	}
+
+	hslMap := map[string]int{
+		"angle":      h.Angle,
+		"saturation": satInt,
+		"luminace":   satLum,
+	}
+
+	return hslMap, nil
 }

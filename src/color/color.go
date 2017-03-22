@@ -17,6 +17,7 @@ type RgbColor struct {
 // Color interface register a common Object that a Color can used to convert to an RGB
 type Color interface {
 	ToRGB() (RgbColor, error)
+	FormatFloatToInt() map[string]int
 }
 
 var (
