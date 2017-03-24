@@ -1,39 +1,55 @@
 package serverManager
 
 import (
+	"bytes"
+	"fmt"
+	"httpinterface"
 	"log"
 	"net/http"
 )
 
-// Handling the conversion
-// I use closure to make it much more cleaner to user
-func conversionHandler(typeName string) http.Handler {
-	// we can make some call here...
-	fn := func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("hello everyone !"))
-	}
+var (
+	b bytes.Buffer
+)
 
-	return http.HandlerFunc(fn)
-}
-
-// Make Server
-//		* Function which launch the server
+// MakeServer - Create our MUX server
 func MakeServer() {
+	// Define our mux server
+
 	mux := http.NewServeMux()
+	mux.HandleFunc("/rgb/", func(w http.ResponseWriter, r *http.Request) {
+		// Call our manager here...
+		rgbHTTP := colorHTTPInterface.RgbHandler{
+			R: r,
+			W: w,
+		}
 
-	// call our closure here by passing the first params
-	// handle rgb to hue route
-	rgbToHue := conversionHandler("rgbToHue")
-	mux.Handle("/convert/rgbToHue", rgbToHue)
+		data, e := rgbHTTP.HandleReq()
 
-	// handle rgb to hexa
-	rgbToHexa := conversionHandler("rgbToHexa")
-	mux.Handle("/convert/hex", rgbToHexa)
+		if e != nil {
+			log.Fatal(e)
+		}
 
-	// handle the template
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("here we should handle the basic template :).."))
+		fmt.Println(data)
+		w.Write(data)
 	})
 
+	mux.HandleFunc("/hsv", func(w http.ResponseWriter, r *http.Request) {
+
+	})
+
+	mux.HandleFunc("/cymk", func(w http.ResponseWriter, r *http.Request) {
+
+	})
+
+	mux.HandleFunc("/ycbcr", func(w http.ResponseWriter, r *http.Request) {
+
+	})
+
+	mux.HandleFunc("/hsl", func(w http.ResponseWriter, r *http.Request) {
+
+	})
+	// Listen our server
+	fmt.Println("run server")
 	log.Fatal(http.ListenAndServe(":1698", mux))
 }

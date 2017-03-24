@@ -4,9 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"strconv"
 )
 
-// hsv Object
+// Hsv Object
 type Hsv struct {
 	H int
 	S float64
@@ -116,4 +117,23 @@ func (h *Hsv) Percent(valueWanted string) (int, error) {
 	}
 
 	return 0, errors.New("The value is not present withing the struct")
+}
+
+// FormatFloatToInt format an Hsv pointer strut data float to an Int
+func (h *Hsv) FormatFloatToInt() (map[string]int, error) {
+	// convert the value to an int
+	s, eS := strconv.Atoi(strconv.FormatFloat(h.S*100, 'f', 0, 64))
+	v, eV := strconv.Atoi(strconv.FormatFloat(h.V*100, 'f', 0, 64))
+
+	if eS != nil || eV != nil {
+		return nil, errors.New("an error happened while converting the hsv values into a map")
+	}
+
+	hsvMap := map[string]int{
+		"H": h.H,
+		"S": s,
+		"V": v,
+	}
+
+	return hsvMap, nil
 }

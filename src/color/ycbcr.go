@@ -1,5 +1,10 @@
 package colorHelper
 
+import (
+	"errors"
+	"strconv"
+)
+
 // YCbCr struct Object
 type YCbCr struct {
 	Y  float64
@@ -33,4 +38,23 @@ func (y YCbCr) ToRGB() RgbColor {
 	}
 
 	return color
+}
+
+// FormatFloatToInt - Format a float ycbcr to an int ycbcr
+func (y YCbCr) FormatFloatToInt() (map[string]int, error) {
+	yF, eF := strconv.Atoi(strconv.FormatFloat(y.Y, 'f', 0, 64))
+	yCb, eCb := strconv.Atoi(strconv.FormatFloat(y.Cb, 'f', 0, 64))
+	yCr, eCr := strconv.Atoi(strconv.FormatFloat(y.Cr, 'f', 0, 64))
+
+	if eF != nil || eCb != nil || eCr != nil {
+		return nil, errors.New("unable to convert ycbcr float value to an int")
+	}
+
+	ycbcrInt := map[string]int{
+		"Y":  yF,
+		"Cb": yCb,
+		"Cr": yCr,
+	}
+
+	return ycbcrInt, nil
 }
