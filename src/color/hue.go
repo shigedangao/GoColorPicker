@@ -2,7 +2,6 @@ package colorHelper
 
 import (
 	"errors"
-	"fmt"
 	"math"
 )
 
@@ -77,7 +76,6 @@ func calcHue(colorName string, colorValue []float64, max float64, min float64) (
 		hue += 360
 	}
 
-	fmt.Println("hue valluee", hue)
 	newHue := &HslStruct{
 		Angle: int(hue),
 	}

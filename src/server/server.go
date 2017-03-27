@@ -19,7 +19,7 @@ func MakeServer() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/rgb/", func(w http.ResponseWriter, r *http.Request) {
 		// Call our manager here...
-		rgbHTTP := colorHTTPInterface.RgbHandler{
+		rgbHTTP := colorHTTPInterface.ColorHttpHandler{
 			R: r,
 			W: w,
 		}
@@ -30,7 +30,6 @@ func MakeServer() {
 			log.Fatal(e)
 		}
 
-		fmt.Println(data)
 		w.Write(data)
 	})
 

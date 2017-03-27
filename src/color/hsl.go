@@ -2,7 +2,6 @@ package colorHelper
 
 import (
 	"errors"
-	"fmt"
 	"math"
 	"strconv"
 )
@@ -116,9 +115,6 @@ func (h *HslStruct) ToRGB() (RgbColor, error) {
 
 	// get the right r'g'b'
 	r, g, b := h.getRightFormula(c, x)
-
-	fmt.Println("green", g)
-	fmt.Println("m ", m)
 
 	rgbMap := make(map[string]float64)
 	rgbMap["red"] = (r + m) * 255
