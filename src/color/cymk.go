@@ -1,4 +1,4 @@
-package colorHelper
+package convertcolor
 
 // Cymk Object
 type Cymk struct {
@@ -6,6 +6,12 @@ type Cymk struct {
 	Y float64
 	M float64
 	K float64
+}
+
+// CymkResponse Object
+type CymkResponse struct {
+	Y Cymk  `json:"res"`
+	E error `json:"err"`
 }
 
 // RgbToCymk convert an RGB value to an Cymk

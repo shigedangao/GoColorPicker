@@ -30,6 +30,7 @@ func MakeServer() {
 			log.Fatal(e)
 		}
 
+		w.Header().Set("Content-type", "application/json")
 		w.Write(data)
 	})
 

@@ -1,4 +1,4 @@
-package colorHelper
+package convertcolor
 
 import (
 	"errors"

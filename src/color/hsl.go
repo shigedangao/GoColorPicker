@@ -1,4 +1,4 @@
-package colorHelper
+package convertcolor
 
 import (
 	"errors"
@@ -11,6 +11,12 @@ type HslStruct struct {
 	Angle      int
 	Saturation float64
 	Luminace   float64
+}
+
+// HslResponse object
+type HslResponse struct {
+	H *HslStruct `json:"res"`
+	E error      `json:"err"`
 }
 
 // RgbToHsl convert an RGB to an HSL value

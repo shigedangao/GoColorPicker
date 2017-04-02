@@ -11,19 +11,19 @@ import (
 
 // Test RGB Creation
 func TestRgbCreation(t *testing.T) {
-	sample := colorHelper.RgbColor{
+	sample := convertcolor.RgbColor{
 		Red:   255,
 		Green: 255,
 		Blue:  255,
 	}
 
-	assert.ObjectsAreEqualValues(sample, colorHelper.MakeColorFromInput(255, 255, 255))
+	assert.ObjectsAreEqualValues(sample, convertcolor.MakeColorFromInput(255, 255, 255))
 }
 
 // TestBadRgbStruct creating a bad RgbColor struct
 func TestBadRgbStructLiteral(t *testing.T) {
 	assert.NotPanics(t, func() {
-		sample := colorHelper.RgbColor{
+		sample := convertcolor.RgbColor{
 			Red:   0,
 			Green: 255,
 			Blue:  254,
@@ -36,24 +36,30 @@ func TestBadRgbStructLiteral(t *testing.T) {
 // TestBadRgbStructInterface creating a bad RgbColor using the interface
 func TestBadRgbStructInterface(t *testing.T) {
 	assert.NotPanics(t, func() {
-		sample := colorHelper.MakeColorFromInput(255, 0, 254)
+		sample := convertcolor.MakeColorFromInput(255, 0, 254)
 		fmt.Println("no panics ", sample)
 	}, "should not panics when creating a struct using an interface..")
 }
 
 // Creating an RGB using a constructor and test the conversion toward Hexa
 func TestRgbToHexa(t *testing.T) {
-	firstSample := colorHelper.MakeColorFromInput(24, 98, 118)
-	hexa := firstSample.ConvertRGBtoHexa()
-	assert.Equal(t, hexa, "186276", "The test has fail")
+	firstSample := convertcolor.MakeColorFromInput(24, 98, 118)
+	hexa, e := firstSample.ConvertRGBtoHexa()
+
+	if e != nil {
+		assert.FailNow(t, e.Error())
+	}
+
+	assert.Equal(t, string(hexa), "186276", "The test has fail")
 }
 
 // Hexa to an RGB value
 func TestHexaToRGB(t *testing.T) {
-	rgb, e := colorHelper.ToRGB("186276")
+	hex := convertcolor.Hex("186276")
+	rgb, e := hex.ToRGB()
 
 	if e != nil {
-		assert.Fail(t, "error converting the rgb to an hexa")
+		assert.Fail(t, e.Error())
 	}
 	assert.Equal(t, uint8(24), rgb.Red, "red is wrong")
 	assert.Equal(t, uint8(98), rgb.Green, "green is wrong")
@@ -62,7 +68,7 @@ func TestHexaToRGB(t *testing.T) {
 
 // TestRgbToCymk test the conversion of an RGB value to Cymk
 func TestRgbToCymk(t *testing.T) {
-	rgb := colorHelper.RgbColor{
+	rgb := convertcolor.RgbColor{
 		Red:   25,
 		Green: 50,
 		Blue:  20,
@@ -78,7 +84,7 @@ func TestRgbToCymk(t *testing.T) {
 
 // TestCymkToRgb testing cymk to rgb
 func TestCymkToRgb(t *testing.T) {
-	cymk := colorHelper.Cymk{
+	cymk := convertcolor.Cymk{
 		C: 0.5,
 		Y: 0.6,
 		M: 0,
@@ -93,7 +99,7 @@ func TestCymkToRgb(t *testing.T) {
 
 // TestRgbYcBcR testing rgb to ycbcr
 func TestRgbYcBcR(t *testing.T) {
-	rgb := colorHelper.RgbColor{
+	rgb := convertcolor.RgbColor{
 		Red:   25,
 		Green: 50,
 		Blue:  20,
@@ -108,7 +114,7 @@ func TestRgbYcBcR(t *testing.T) {
 
 // Test YcbCr to Rgb
 func TestYcbCrToRgb(t *testing.T) {
-	ycbcr := colorHelper.YCbCr{
+	ycbcr := convertcolor.YCbCr{
 		Y:  39.105,
 		Cb: 117.2175,
 		Cr: 117.9396,
@@ -122,7 +128,7 @@ func TestYcbCrToRgb(t *testing.T) {
 
 // Create a normal Rgb value and test to convert it into HSL
 func TestRgbToHsl(t *testing.T) {
-	sample := colorHelper.RgbColor{
+	sample := convertcolor.RgbColor{
 		Red:   3,
 		Green: 34,
 		Blue:  76,
@@ -143,7 +149,7 @@ func TestRgbToHsl(t *testing.T) {
 
 // TestRgbToHslUniform Create a "uniform" constant RGB value and convert it into an HSL
 func TestRgbToHslUniform(t *testing.T) {
-	sample := colorHelper.RgbColor{
+	sample := convertcolor.RgbColor{
 		Red:   250,
 		Green: 250,
 		Blue:  250,
@@ -168,7 +174,7 @@ func TestHslToRGB(t *testing.T) {
 	// Precision might play a bit on the value
 	// It's recommend to use the RAW value than the Round int value to convert the data
 
-	hslSample := &colorHelper.HslStruct{
+	hslSample := &convertcolor.HslStruct{
 		Angle:      203,
 		Saturation: 0.9797979797979799,
 		Luminace:   0.19411764705882353,
@@ -187,7 +193,7 @@ func TestHslToRGB(t *testing.T) {
 
 // testRgbToHsv test a conversion from an RGB value to an HSV
 func TestRgbToHsv(t *testing.T) {
-	rgb := colorHelper.RgbColor{
+	rgb := convertcolor.RgbColor{
 		Red:   1,
 		Green: 60,
 		Blue:  98,
@@ -208,7 +214,7 @@ func TestRgbToHsv(t *testing.T) {
 
 // TestHsvToRgb - convert an hsv to an rgb
 func TestHsvToRgb(t *testing.T) {
-	sample := colorHelper.Hsv{
+	sample := convertcolor.Hsv{
 		H: 203,
 		S: 0.98,
 		V: 0.38,
@@ -228,7 +234,7 @@ func TestHsvToRgb(t *testing.T) {
 func TestGenerateTint(t *testing.T) {
 	// generating multipe tint value
 	// make as simple rgb value
-	rgb := colorHelper.RgbColor{
+	rgb := convertcolor.RgbColor{
 		Red:   1,
 		Green: 60,
 		Blue:  98,
@@ -245,7 +251,7 @@ func TestGenerateTint(t *testing.T) {
 func TestGenerateShade(t *testing.T) {
 	// generating multipe tint value
 	// make as simple rgb value
-	rgb := colorHelper.RgbColor{
+	rgb := convertcolor.RgbColor{
 		Red:   1,
 		Green: 60,
 		Blue:  98,
@@ -262,7 +268,7 @@ func TestGenerateShade(t *testing.T) {
 func TestGenerateBadTint(t *testing.T) {
 	// generating multipe tint value
 	// make as simple rgb value
-	rgb := colorHelper.RgbColor{
+	rgb := convertcolor.RgbColor{
 		Red:   1,
 		Green: 60,
 		Blue:  98,
@@ -279,7 +285,7 @@ func TestGenerateBadTint(t *testing.T) {
 func TestGenerateBadShade(t *testing.T) {
 	// generating multipe tint value
 	// make as simple rgb value
-	rgb := colorHelper.RgbColor{
+	rgb := convertcolor.RgbColor{
 		Red:   1,
 		Green: 60,
 		Blue:  98,
@@ -294,7 +300,7 @@ func TestGenerateBadShade(t *testing.T) {
 
 // Testing generate wrong type of shade
 func TestGenerateWrongType(t *testing.T) {
-	rgb := colorHelper.RgbColor{
+	rgb := convertcolor.RgbColor{
 		Red:   1,
 		Green: 60,
 		Blue:  98,

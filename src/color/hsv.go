@@ -1,4 +1,4 @@
-package colorHelper
+package convertcolor
 
 import (
 	"errors"
@@ -12,6 +12,12 @@ type Hsv struct {
 	H int
 	S float64
 	V float64
+}
+
+// HsvResponse Object
+type HsvResponse struct {
+	V *Hsv  `json:"res"`
+	E error `json:"err"`
 }
 
 // RgbToHsv convert an RgbColor Object to an Hsv object pointer

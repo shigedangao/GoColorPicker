@@ -6,17 +6,18 @@ import (
 	"net/http"
 )
 
-type handler struct {
-	Rgb  colorHelper.RgbColor
-	Hexa string
-	Hsv  *colorHelper.Hsv
-	Hsl  *colorHelper.HslStruct
+type reqHandler struct {
+	Rgb    convertcolor.RgbColor
+	Hexa   convertcolor.Hex
+	Hsv    *convertcolor.Hsv
+	Hsl    *convertcolor.HslStruct
+	Factor int
 }
 
 // extractPOSTData extract the data from a post
-func extractPOSTData(params []string, r *http.Request) (*handler, error){
+func extractPOSTData(params []string, r *http.Request) (*reqHandler, error) {
 
-	dataFromReq := &handler{}
+	dataFromReq := &reqHandler{}
 	err := json.NewDecoder(r.Body).Decode(dataFromReq)
 
 	if err != nil {
@@ -26,15 +27,4 @@ func extractPOSTData(params []string, r *http.Request) (*handler, error){
 	return dataFromReq, nil
 }
 
-// makeJSONData transform our struct into a json
-func makeJSONData(h handler) ([]byte, error){
-	data, err := json.Marshal(h)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return data, nil
-}
-
-
+// Convert the data into a JSON depending of the type...
