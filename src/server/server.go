@@ -34,8 +34,20 @@ func MakeServer() {
 		w.Write(data)
 	})
 
-	mux.HandleFunc("/hsv", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/hsv/", func(w http.ResponseWriter, r *http.Request) {
+		hsvHTTP := colorHTTPInterface.ColorHttpHandler{
+			R: r,
+			W: w,
+		}
 
+		data, e := hsvHTTP.HandleHsvReq()
+
+		if e != nil {
+			log.Panicf(e.Error())
+		}
+
+		w.Header().Set("Content-type", "application/json")
+		w.Write(data)
 	})
 
 	mux.HandleFunc("/cymk", func(w http.ResponseWriter, r *http.Request) {

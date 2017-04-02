@@ -49,7 +49,7 @@ func (c RgbColor) RgbToHsv() (*Hsv, error) {
 
 // ToRGB Convert an Hsv Object to an Rgb one
 // Return *RgbColor || error
-func (h *Hsv) ToRGB() (*RgbColor, error) {
+func (h *Hsv) ToRGB() (RgbColor, error) {
 	max := 255 * h.V
 	min := max * (1 - h.S)
 
@@ -58,15 +58,15 @@ func (h *Hsv) ToRGB() (*RgbColor, error) {
 	z := (max - min) * (1 - (math.Mod((float64(h.H)/60), 2) - 1))
 	rgb := h.calcRgbFromHsv(max, min, z)
 
-	if rgb == nil {
-		return nil, errors.New("An error happened while converting hsv to rgb")
+	if rgb == (RgbColor{}) {
+		return RgbColor{}, errors.New("An error happened while converting hsv to rgb")
 	}
 
 	return rgb, nil
 }
 
 // calcRgbFromHsv calc Hsv value from RgbColor Object
-func (h *Hsv) calcRgbFromHsv(max float64, min float64, z float64) *RgbColor {
+func (h *Hsv) calcRgbFromHsv(max float64, min float64, z float64) RgbColor {
 
 	var (
 		red   float64
@@ -101,7 +101,7 @@ func (h *Hsv) calcRgbFromHsv(max float64, min float64, z float64) *RgbColor {
 		blue = z + min
 	}
 
-	rgb := &RgbColor{
+	rgb := RgbColor{
 		Red:   uint8(red),
 		Green: uint8(green),
 		Blue:  uint8(blue),
