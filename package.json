@@ -1,15 +1,24 @@
 {
   "name": "colorpicker",
   "version": "1.0.0",
-  "description": "",
-  "main": "./electron/js/main.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "go run src/start.go | ./node_modules/.bin/electron ."
-  },
-  "author": "Marc Intha-amnouay",
+  "description": "a colorpicker project !",
+  "main": "./electron/dist/electron.js",
   "license": "MIT",
+  "dependencies": {
+    "electron": "^1.6.2",
+    "react": "^15.5.3",
+    "react-dom": "^15.4.2",
+    "webpack": "^2.3.3"
+  },
+  "scripts": {
+    "build": "./node_modules/.bin/webpack",
+    "start": "./node_modules/.bin/electron ."
+  },
   "devDependencies": {
-    "electron": "^1.6.2"
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.0",
+    "babel-loader": "^6.4.1",
+    "babel-preset-env": "^1.3.2",
+    "babel-preset-react": "^6.24.1"
   }
 }

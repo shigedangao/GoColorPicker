@@ -61,6 +61,20 @@ func MakeServer() {
 	mux.HandleFunc("/hsl", func(w http.ResponseWriter, r *http.Request) {
 
 	})
+
+	mux.HandleFunc("/socket", func(w http.ResponseWriter, r *http.Request){
+		socket := colorHTTPInterface.HandleSocket(w, r)
+
+		messageType, data, e := socket.ReadMessage()
+
+		if e != nil {
+			log.Fatal(e)
+		}
+
+		fmt.Println("message type"+string(messageType))
+		fmt.Println(data)
+	})
+
 	// Listen our server
 	fmt.Println("run server")
 	log.Fatal(http.ListenAndServe(":1698", mux))
