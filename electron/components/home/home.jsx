@@ -10,8 +10,6 @@ export default class Home extends React.Component {
      * @public
      */
     start() {
-        console.log(HelperApp);
-        debugger;
         HelperApp.initSW()
         .then(res => {
             console.log(res);
@@ -19,6 +17,13 @@ export default class Home extends React.Component {
         .catch(e => {
             console.log(e);
         });
+    }
+
+    /**
+     * Send Message
+     */
+    sendMess(){
+        HelperApp.sendMessage();
     }
     /**
      * Render
@@ -29,6 +34,7 @@ export default class Home extends React.Component {
         return (
             <div>
                 <button onClick={this.start}>sw</button>
+                <button onClick={this.sendMess}>Message</button>
             </div>
         )
         
