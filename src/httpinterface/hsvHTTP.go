@@ -1,4 +1,4 @@
-package colorHTTPInterface
+package serverManager
 
 import (
 	"encoding/json"

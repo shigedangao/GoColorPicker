@@ -1,10 +1,9 @@
-package colorHTTPInterface
+package serverManager
 
 import (
 	"bytes"
 	"color"
 	"encoding/json"
-	"log"
 	"net/http"
 )
 
@@ -14,12 +13,6 @@ type reqHandler struct {
 	Hsv    *convertcolor.Hsv
 	Hsl    *convertcolor.HslStruct
 	Factor int
-}
-
-// ColorHttpHandler is an http handler for the HTTP
-type ColorHttpHandler struct {
-	R *http.Request
-	W http.ResponseWriter
 }
 
 // SendDataIface interface
@@ -49,23 +42,23 @@ func (r ColorHttpHandler) extractMapDataFromURL() string {
 	return buffer.String()
 }
 
-// HandleReq Handle an HTTP request with the endpoint /rgb/{params}
-func (r ColorHttpHandler) HandleReq() ([]byte, error) {
-	// now treat the operation ....
-	// pare the url
-	str := r.extractMapDataFromURL()
+// // HandleReq Handle an HTTP request with the endpoint /rgb/{params}
+// func (r ColorHttpHandler) HandleReq() ([]byte, error) {
+// 	// now treat the operation ....
+// 	// pare the url
+// 	str := r.extractMapDataFromURL()
 
-	// call our getInterlRoute and data from a goroutine
-	jsonData := make(chan []byte)
-	go r.getInternalRoute(jsonData, str)
+// 	// call our getInterlRoute and data from a goroutine
+// 	jsonData := make(chan []byte)
+// 	go r.getInternalRoute(jsonData, str)
 
-	data := <-jsonData
-	// Get the params that we want to
+// 	data := <-jsonData
+// 	// Get the params that we want to
 
-	return data, nil
-}
+// 	return data, nil
+// }
 
-// extractPOSTData extract the data from a post
+// // extractPOSTData extract the data from a post
 func extractPOSTData(r *http.Request) (*reqHandler, error) {
 
 	dataFromReq := &reqHandler{}
@@ -78,25 +71,25 @@ func extractPOSTData(r *http.Request) (*reqHandler, error) {
 	return dataFromReq, nil
 }
 
-// getRgb return an rgb value of a type..
-func (r reqHandler) getRgb(typestruct string) convertcolor.RgbColor {
+// // getRgb return an rgb value of a type..
+// func (r reqHandler) getRgb(typestruct string) convertcolor.RgbColor {
 
-	var rgb convertcolor.RgbColor
+// 	var rgb convertcolor.RgbColor
 
-	switch typestruct {
-	case "hsv":
-		rgbvalue, e := r.Hsv.ToRGB()
+// 	switch typestruct {
+// 	case "hsv":
+// 		rgbvalue, e := r.Hsv.ToRGB()
 
-		if e != nil {
-			log.Panicf(e.Error())
-		} else {
-			rgb = rgbvalue
-		}
-		break
-	}
+// 		if e != nil {
+// 			log.Panicf(e.Error())
+// 		} else {
+// 			rgb = rgbvalue
+// 		}
+// 		break
+// 	}
 
-	return rgb
-}
+// 	return rgb
+// }
 
 // process Data process the empty interface array of mixed object and get their json
 func processData(colors []SendDataIface) []byte {
