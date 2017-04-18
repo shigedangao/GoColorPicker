@@ -8,12 +8,6 @@ type Cymk struct {
 	K float64
 }
 
-// CymkResponse Object
-type CymkResponse struct {
-	Y Cymk  `json:"res"`
-	E error `json:"err"`
-}
-
 // RgbToCymk convert an RGB value to an Cymk
 // Return Cymk
 func (c RgbColor) RgbToCymk() Cymk {

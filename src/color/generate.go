@@ -4,12 +4,6 @@ import (
 	"errors"
 )
 
-// GenerateResponse object s
-type GenerateResponse struct {
-	R []RgbColor `json:"res"`
-	E error      `json:"err"`
-}
-
 // GenerateShadeTint generate a shade or a tint
 // Params factor : int && genType : String
 // Return []RgbColor || error

@@ -14,12 +14,6 @@ type Hsv struct {
 	V float64
 }
 
-// HsvResponse Object
-type HsvResponse struct {
-	V *Hsv  `json:"res"`
-	E error `json:"err"`
-}
-
 // RgbToHsv convert an RgbColor Object to an Hsv object pointer
 // Return *Hsv || error
 func (c RgbColor) RgbToHsv() (*Hsv, error) {
@@ -35,7 +29,7 @@ func (c RgbColor) RgbToHsv() (*Hsv, error) {
 	fmt.Println("hue str", hueStruct)
 
 	if err != nil {
-		return nil, errors.New("An error happened while converting the RGB Color to HSV")
+		return nil, err
 	}
 
 	hsvStruct := &Hsv{
