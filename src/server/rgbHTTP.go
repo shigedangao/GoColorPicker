@@ -30,6 +30,12 @@ func (h ColorHTTPHandler) HandleRGBRequest() ([]byte, error) {
 	case "hsl":
 		go _color.Rgb.ToHsl(rgbChan)
 		break
+	case "shade":
+		go _color.Rgb.ToShade(rgbChan, _color.Factor)
+		break
+	case "tint":
+		go _color.Rgb.ToTint(rgbChan, _color.Factor)
+		break
 	default:
 		return nil, nil
 	}
