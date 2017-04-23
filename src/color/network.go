@@ -101,3 +101,12 @@ func (r RgbColor) ToTint(c chan []byte, factor int) {
 
 	c <- colorize.ToJSON()
 }
+
+// ToRGBJson convert an rgb value to a json
+func (r RgbColor) ToRGBJson(c chan []byte, rgb RgbColor) {
+	colorize := colorJSON{
+		Rgb: rgb,
+	}
+
+	c <- colorize.ToJSON()
+}
