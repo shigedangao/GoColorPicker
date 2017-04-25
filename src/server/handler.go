@@ -33,6 +33,8 @@ func (h ColorHTTPHandler) HandleType(typeColor string) ([]byte, error) {
 	case "hex":
 		go rgb.ToHex(hsvChan)
 		break
+	case "hsl":
+		go rgb.ToHsl(hsvChan)
 	case "rgb":
 		go rgb.ToRGBJson(hsvChan, rgb)
 		break
@@ -51,6 +53,8 @@ func (h ColorHTTPHandler) HandleType(typeColor string) ([]byte, error) {
 	case "hsv":
 		go rgb.ToHsv(hsvChan)
 		break
+	default:
+		hsvChan <- []byte("type is not supported")
 	}
 
 	dataToWrite = <-hsvChan
