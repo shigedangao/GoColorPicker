@@ -18,11 +18,10 @@ install:
 
 before_script:
   - go build src/start.go
-  - npm install --save-dev mocha
-  - npm install --save-dev should 
 
 script: 
   # Launch the go test 
   - go test -v src/test/color_test.go
-  # Launch the JavaScript test 
-  - ./node_modules/mocha/bin/mocha
+  - go test -v src/test/server_rgb_test.go
+  - go test -v src/test/server_hsv_test.go
+  - go test -v src/test/server_hsl_test.go
