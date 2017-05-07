@@ -2,7 +2,6 @@ package convertcolor
 
 import (
 	"errors"
-	"fmt"
 	"math"
 	"strconv"
 )
@@ -23,10 +22,7 @@ func (c RgbColor) RgbToHsv() (*Hsv, error) {
 
 	// creating the HSV value
 	maxColor := getMaxColor(max, color)
-	fmt.Println(maxColor)
 	hueStruct, err := calcHue(maxColor, color, max, min)
-
-	fmt.Println("hue str", hueStruct)
 
 	if err != nil {
 		return nil, err

@@ -27,11 +27,6 @@ type colorList struct {
 	Factor int
 }
 
-// JSONize interface
-type JSONize interface {
-	ToJSON() []byte
-}
-
 var (
 	b         bytes.Buffer
 	colorHTTP ColorHTTPHandler
@@ -66,7 +61,7 @@ func (h ColorHTTPHandler) extractMapDataFromURL() string {
 	return buffer.String()
 }
 
-func (h ColorHTTPHandler) prepareAPI(w http.ResponseWriter, r *http.Request, t string) ColorHTTPHandler {
+func (h ColorHTTPHandler) PrepareAPI(w http.ResponseWriter, r *http.Request, t string) ColorHTTPHandler {
 	h.R = r
 	h.W = w
 	h.T = t
@@ -78,8 +73,8 @@ func (h ColorHTTPHandler) prepareAPI(w http.ResponseWriter, r *http.Request, t s
 func TypeHandler(typedata string) {
 	// Create our own custom handler
 	mux.HandleFunc(string([]byte("/"+typedata+"/")), func(w http.ResponseWriter, r *http.Request) {
-		colorHTTP := colorHTTP.prepareAPI(w, r, typedata)
-		data, e := colorHTTP.HandleType(typedata)
+		colorHTTP := colorHTTP.PrepareAPI(w, r, typedata)
+		data, e := colorHTTP.HandleType()
 
 		handleResponse(w, data, e)
 	})

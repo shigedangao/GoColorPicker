@@ -8,7 +8,7 @@ import (
 // This file handle every request for converting a given HSV type to an other type
 
 // HandleType handle the request for hsv
-func (h ColorHTTPHandler) HandleType(typeColor string) ([]byte, error) {
+func (h ColorHTTPHandler) HandleType() ([]byte, error) {
 	var (
 		dataToWrite []byte
 	)
@@ -18,16 +18,12 @@ func (h ColorHTTPHandler) HandleType(typeColor string) ([]byte, error) {
 		return nil, e
 	}
 
-	if _color.Hsv == nil {
-		return nil, errors.New(string([]byte(typeColor + " is not supported")))
-	}
-
 	subroute := h.extractMapDataFromURL()
 	hsvChan := make(chan []byte)
 
 	// In the underlying process we first convert the data into an RGB value in order to manipulate easily the data
 
-	rgb, _ := _color.getRGBColorFromType(typeColor)
+	rgb, _ := _color.getRGBColorFromType(h.T)
 
 	switch subroute {
 	case "hex":
