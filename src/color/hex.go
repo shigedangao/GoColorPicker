@@ -8,12 +8,6 @@ import (
 // Hex is a struct referencing an hexa decimal color value
 type Hex string
 
-// HexResponse is used to handle the http req
-type HexResponse struct {
-	H Hex   `json:"res"`
-	E error `json:"err"`
-}
-
 // ConvertRGBtoHexa Convert an RGB to an Hexa value
 // Return string
 func (c RgbColor) ConvertRGBtoHexa() (Hex, error) {
@@ -57,7 +51,7 @@ func (h Hex) ToRGB() (RgbColor, error) {
 		tmpVal, err := strconv.ParseInt(value, 16, 32)
 
 		if err != nil {
-			return RgbColor{}, errors.New("An error happened while converting the Hex to RGB")
+			return RgbColor{}, err
 		}
 
 		switch i {

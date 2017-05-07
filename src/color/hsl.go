@@ -13,12 +13,6 @@ type HslStruct struct {
 	Luminace   float64
 }
 
-// HslResponse object
-type HslResponse struct {
-	H *HslStruct `json:"res"`
-	E error      `json:"err"`
-}
-
 // RgbToHsl convert an RGB to an HSL value
 // Return *HslStruct (pointer)
 // Those calculation are based on an article published on niwa.nu

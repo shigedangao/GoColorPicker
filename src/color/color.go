@@ -13,12 +13,6 @@ type RgbColor struct {
 	Blue  uint8
 }
 
-// Response use directly by the HTTP handler
-type RgbResponse struct {
-	R RgbColor
-	E error
-}
-
 // Color interface register a common Object that a Color can used to convert to an RGB
 type Color interface {
 	ToRGB() (RgbColor, error)

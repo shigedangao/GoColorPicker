@@ -1,0 +1,26 @@
+{
+    "rgb" : {
+        "method" : "POST",
+        "datatype" : "rgb"
+    },
+    "hsv" : {
+        "method" : "POST",
+        "datatype" : "hsv"
+    },
+    "hsl" : {
+        "method" : "POST",
+        "datatype" : "hsl"
+    },
+    "hex" : {
+        "method" : "POST",
+        "datatype" : "hex"
+    },
+    "cymk": {
+        "method" : "POST",
+        "datatype" : "cymk"
+    },
+    "ycbcr" : {
+        "method" : "POST",
+        "datatype" : "ycbcr"
+    }
+}

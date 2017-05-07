@@ -1,69 +1,112 @@
 package convertcolor
 
-import (
-	"encoding/json"
-)
+// colorJSON - This struct is only use when doing BULK request the data will be trimmed when creating the JSON
 
-// RgbResponse makeJSONData convert an RgbStruct and it's error into a slice of a byte
-func (r RgbResponse) MakeJSONData() []byte {
-	data, e := json.Marshal(r)
+// Note : We don't create a single reference and cleanup each time after sending back to the main routine. Testing this method increase the response of about += 4ms
 
-	if e != nil {
-		return []byte("e: " + e.Error())
-	}
-
-	return data
+type colorJSON struct {
+	Rgb   RgbColor   `json:"rgb,omitempty"`
+	Hexa  Hex        `json:"hex,omitempty"`
+	Hsv   *Hsv       `json:"hsv,omitempty"`
+	Ck    *Cymk      `json:"cymk,omitempty"`
+	Yb    *YCbCr     `json:"ycbcr,omitempty"`
+	Hsl   *HslStruct `json:"hsl,omitempty"`
+	Shade []RgbColor `json:"shade,omitempty"`
+	Tint  []RgbColor `json:"tint,omitempty"`
+	E     error      `json:"error,omitempty"`
 }
 
-// HsvResponse makeJSONData convert an HsvResponse struct into a slice of a byte
-func (h HsvResponse) MakeJSONData() []byte {
-	data, e := json.Marshal(h)
+// ToHex embeded the ToHex method to be called by the server conccurently
+func (r RgbColor) ToHex(c chan []byte) {
 
-	if e != nil {
-		return []byte("e: " + e.Error())
+	hex, e := r.ConvertRGBtoHexa()
+
+	colorize := colorJSON{
+		Hexa: hex,
+		E:    e,
 	}
 
-	return data
+	c <- colorize.ToJSON()
 }
 
-// HslResponse makeJSONData convert an HslResponse struct into a slice of a byte
-func (h HslResponse) MakeJSONData() []byte {
-	data, e := json.Marshal(h)
+// ToHsv embeded the HSV value into a chan of byte
+func (r RgbColor) ToHsv(c chan []byte) {
+	hsv, e := r.RgbToHsv()
 
-	if e != nil {
-		return []byte("e:" + h.E.Error())
+	colorize := colorJSON{
+		Hsv: hsv,
+		E:   e,
 	}
 
-	return data
+	c <- colorize.ToJSON()
 }
 
-func (st GenerateResponse) MakeJSONData() []byte {
-	data, e := json.Marshal(st)
+// ToCymk convert a Cymk to JSON
+func (r RgbColor) ToCymk(c chan []byte) {
+	cymk := r.RgbToCymk()
 
-	if e != nil {
-		return []byte("e:" + e.Error())
+	colorize := &colorJSON{
+		Ck: cymk,
 	}
 
-	return data
+	c <- colorize.ToJSON()
 }
 
-func (h HexResponse) MakeJSONData() []byte {
-	if len(h.H) == 0 {
-		return []byte("e: " + h.E.Error())
+// ToYcbCr convert a Ycbcr to JSON
+func (r RgbColor) ToYcbCr(c chan []byte) {
+	ycbcr := r.ConvertYCbCr()
+
+	colorize := colorJSON{
+		Yb: ycbcr,
 	}
 
-	data, _ := json.Marshal(h)
-
-	return data
+	c <- colorize.ToJSON()
 }
 
-// Cymk
-func (y CymkResponse) makeJSONData() []byte {
-	data, e := json.Marshal(y)
+// ToHsl convert an RGB based value to an Hsl value
+func (r RgbColor) ToHsl(c chan []byte) {
+	hsl := r.RgbToHsl()
 
-	if e != nil {
-		return []byte("e: " + e.Error())
+	if hsl == nil {
+		c <- []byte("hsl is empty")
 	}
 
-	return data
+	colorize := colorJSON{
+		Hsl: hsl,
+	}
+
+	c <- colorize.ToJSON()
+}
+
+// ToShade RGB Convert an RGB value to a shade of RGB Color
+func (r RgbColor) ToShade(c chan []byte, factor int) {
+	shade, e := r.GenerateShadeTint(factor, "shade")
+
+	colorize := colorJSON{
+		Shade: shade,
+		E:     e,
+	}
+
+	c <- colorize.ToJSON()
+}
+
+// ToTint RGB Convert an RGB value to a tint of RGB Color
+func (r RgbColor) ToTint(c chan []byte, factor int) {
+	tint, e := r.GenerateShadeTint(factor, "tint")
+
+	colorize := colorJSON{
+		Tint: tint,
+		E:    e,
+	}
+
+	c <- colorize.ToJSON()
+}
+
+// ToRGBJson convert an rgb value to a json
+func (r RgbColor) ToRGBJson(c chan []byte, rgb RgbColor) {
+	colorize := colorJSON{
+		Rgb: rgb,
+	}
+
+	c <- colorize.ToJSON()
 }
