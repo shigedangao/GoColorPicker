@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var hsldata = json.RawMessage(`{
+var rgbdata = json.RawMessage(`{
 	"Rgb" : {
 		"Red": 100,
 		"Green": 100,
@@ -22,7 +22,7 @@ var hsldata = json.RawMessage(`{
 // Test Handle Rgb To HSL Request
 func TestHandleRgbToHSLRequest(t *testing.T) {
 
-	req := httptest.NewRequest("POST", "http://localhost:1698/rgb/hsl", bytes.NewBuffer(hsvdata))
+	req := httptest.NewRequest("POST", "http://localhost:1698/rgb/hsl", bytes.NewBuffer(rgbdata))
 	w := httptest.NewRecorder()
 
 	utils.Handler(req, w, "rgb")
@@ -37,7 +37,7 @@ func TestHandleRgbToHSLRequest(t *testing.T) {
 
 // TestHandleRgbToHexRequest test an rgb to an hex
 func TestHandleRgbToHexRequest(t *testing.T) {
-	req := httptest.NewRequest("POST", "http://localhost:1698/rgb/hex", bytes.NewBuffer(hsvdata))
+	req := httptest.NewRequest("POST", "http://localhost:1698/rgb/hex", bytes.NewBuffer(rgbdata))
 
 	w := httptest.NewRecorder()
 	utils.Handler(req, w, "rgb")
@@ -52,7 +52,7 @@ func TestHandleRgbToHexRequest(t *testing.T) {
 
 // TestHandleRgbToHsvRequest test an rgb to an hsv request
 func TestHandleRgbToHsvRequest(t *testing.T) {
-	req := httptest.NewRequest("POST", "http://localhost:1698/rgb/hsv", bytes.NewBuffer(hsvdata))
+	req := httptest.NewRequest("POST", "http://localhost:1698/rgb/hsv", bytes.NewBuffer(rgbdata))
 
 	w := httptest.NewRecorder()
 	utils.Handler(req, w, "rgb")
@@ -67,7 +67,7 @@ func TestHandleRgbToHsvRequest(t *testing.T) {
 
 // TestHandleRgbToCymkRequest test rgb to cymk
 func TestHandleRgbToCymkRequest(t *testing.T) {
-	req := httptest.NewRequest("POST", "http://localhost:1698/rgb/cymk", bytes.NewBuffer(hsvdata))
+	req := httptest.NewRequest("POST", "http://localhost:1698/rgb/cymk", bytes.NewBuffer(rgbdata))
 
 	w := httptest.NewRecorder()
 	utils.Handler(req, w, "rgb")
@@ -82,7 +82,7 @@ func TestHandleRgbToCymkRequest(t *testing.T) {
 
 // TestHandleRgbToYcbcrRequest test an rgb request to get an ycbcr value
 func TestHandleRgbToYcbcrRequest(t *testing.T) {
-	req := httptest.NewRequest("POST", "http://localhost:1798/rgb/ycbcr", bytes.NewBuffer(hsvdata))
+	req := httptest.NewRequest("POST", "http://localhost:1798/rgb/ycbcr", bytes.NewBuffer(rgbdata))
 
 	w := httptest.NewRecorder()
 	utils.Handler(req, w, "rgb")
@@ -97,7 +97,7 @@ func TestHandleRgbToYcbcrRequest(t *testing.T) {
 
 // TestHandleRgbToShadeRequest test an rgb request to get a shade value
 func TestHandleRgbToShadeRequest(t *testing.T) {
-	req := httptest.NewRequest("POST", "http://localhost:1798/rgb/shade", bytes.NewBuffer(hsvdata))
+	req := httptest.NewRequest("POST", "http://localhost:1798/rgb/shade", bytes.NewBuffer(rgbdata))
 
 	w := httptest.NewRecorder()
 	utils.Handler(req, w, "rgb")
@@ -112,7 +112,7 @@ func TestHandleRgbToShadeRequest(t *testing.T) {
 
 // TestHandleRgbToShadeRequest test an rgb request to get a tint value
 func TestHandleRgbToTintRequest(t *testing.T) {
-	req := httptest.NewRequest("POST", "http://localhost:1798/rgb/tint", bytes.NewBuffer(hsvdata))
+	req := httptest.NewRequest("POST", "http://localhost:1798/rgb/tint", bytes.NewBuffer(rgbdata))
 
 	w := httptest.NewRecorder()
 	utils.Handler(req, w, "rgb")
